@@ -20,7 +20,7 @@ public class Mongo {
     }
     
     /**
-     * Añadimos una DB.
+     * Añade una DB.
      * @param db Nombre de la db.
      * @return Self => Por si quieres Method Chaining.
      */
@@ -30,7 +30,7 @@ public class Mongo {
     }
     
     /**
-     * Añados Collection.
+     * Añade una Collection.
      * @param coll Nombre de la collección.
      * @return Self => Por si quieres Method Chaining.
      */

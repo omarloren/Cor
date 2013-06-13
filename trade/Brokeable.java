@@ -20,38 +20,38 @@ public abstract class Brokeable {
         //No sé qué :/
     }    
     /**
-     * Revisamos qué compras excedieron sus limites.
+     * Revisa qué compras excedieron sus limites.
      * @param ask 
      */
     public void asker(Double ask){
-        for(int i=0; i <this.orders.size(); i++){
-            if (this.orders.get(i).getSide() == '1'){
-               if (ask <= this.orders.get(i).getSl() || ask >= this.orders.get(i).getTp()) {
-                   this.orders.get(i).setClosePrice(ask).setReason("TP ó SL");
-                   
-               }
+        for (int i = 0; i < this.orders.size(); i++) {
+            if (this.orders.get(i).getSide() == '1') {
+                if (ask <= this.orders.get(i).getSl() || ask >= this.orders.get(i).getTp()) {
+                    this.orders.get(i).setClosePrice(ask).setReason("TP ó SL");
+
+                }
             }
         }
     }
     
     /**
-     * Revisamos qué ventas excedieron sus limites.
+     * Revisa qué ventas excedieron sus limites.
      * @param bid 
      */
     public void bider(Double bid){
-        for(int i=0; i <this.orders.size(); i++){
-            Ordener orden = this.orders.get(i);
-            if (orden.getSide() == '2'){
-               if (bid >= orden.getSl() || bid <= orden.getTp()) {
-                   orden.setClosePrice(bid).setReason("TP ó SL");
-                   this.orderClosedCallback(orden);
+        for (int i = 0; i <this.orders.size(); i++) {
+            Ordener o = this.orders.get(i);
+            if (o.getSide() == '2'){
+               if (bid >= o.getSl() || bid <= o.getTp()) {
+                   o.setClosePrice(bid).setReason("TP ó SL");
+                   this.orderClosedCallback(o);
                }
             }
         }
     }
     
     /**
-     * Abrimos una orden.
+     * Abre una orden.
      * @param orden
      */
     public void sendOrder(Ordener orden){
@@ -61,19 +61,53 @@ public abstract class Brokeable {
     }
     
     /**
-     * Cerramos una orden, por su id.
+     * Cierra una orden, por su id.
      * @param price 
      */
     public void closeOrder(String id, Double price){
         for (int i = 0; i < this.orders.size(); i++) {
-            Ordener orden = this.orders.get(i);
-            if (orden.getID().equals(id)) {
-                orden.setClosePrice(price);
+            Ordener o = this.orders.get(i);
+            if (o.getID().equals(id)) {
+                o.setClosePrice(price);
                 //TODO guardar registro en DB.
                 this.orders.remove(i).setReason("closed by User");
-                this.orderClosedCallback(orden);
+                this.orderClosedCallback(o);
             }
         }
+    }
+    
+    /**
+     * Obtiene el total de ordenes que hay para ese cruce y magic. Un expert
+     * que este manejando cierta moneda no podrá ver otros cruces.
+     * @param ma MAGIC NUMBER.
+     * @param symbol
+     * @return 
+     */
+    public ArrayList<Ordener> getOrdersByMagic(String symbol, Integer ma){
+        ArrayList r= new ArrayList();
+        for (int i = 0; i < orders.size(); i++) {
+            Ordener o = this.orders.get(i); //temporal.
+            if (o.getSymbol().equals(symbol) && o.getMagic() == ma) {
+                r.add(orders.get(i));
+            }            
+        }
+        return r; 
+    }
+    
+    /**
+     * Obtiene las ordenes para un symbol.
+     * @param symbol
+     * @return 
+     */
+    public ArrayList<Ordener> getOrdersBySymbol(String symbol){
+        ArrayList r= new ArrayList();
+        for (int i = 0; i < orders.size(); i++) {
+            Ordener o = this.orders.get(i); //temporal.
+            if (o.getSymbol().equals(symbol)) {
+                r.add(orders.get(i));
+            }            
+        }
+        return r; 
     }
     
     /**

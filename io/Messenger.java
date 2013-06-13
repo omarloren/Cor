@@ -28,7 +28,7 @@ public abstract class Messenger extends Thread{
         this.port = port;
     }
     /**
-     * Añadimos ID de la aplicación.
+     * Añade ID de la aplicación.
      * @param id
      * @return 
      */
@@ -85,7 +85,7 @@ public abstract class Messenger extends Thread{
     }
     
     /**
-     * Escribimos mensajes a node un objecto json.
+     * Escribe mensajes a node un objecto json.
      * @param json 
      */
     public void send(JSONObject json) {
