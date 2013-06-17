@@ -7,7 +7,8 @@ import java.util.logging.Logger;
 
 /**
  * Control en la creación de instancias de DB's, soportadas:
- *  -MongoDB.
+ *  - MongoDB.
+ *  - Y ya...
  * @author omar
  */
 public class Connections {

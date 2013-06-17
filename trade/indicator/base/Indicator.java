@@ -1,13 +1,13 @@
 
-
+package trade.indicator.base;
 
 import java.util.ArrayList;
 
 /**
- * Molde sde los indicadores.
+ *
  * @author omar
  */
-abstract class Indicator {
+public abstract class Indicator {
     /**
      * Values - Son los datos con los que el indicador trabajará. 
      */
@@ -16,22 +16,42 @@ abstract class Indicator {
      * Tamaño del indicador.
      */
     private int n;
-    private Double point;
+    
+    private int periodo;
+    
     /**
      * Variable para verificar que se tiene la cantidad correcta de valores.
      */
     public boolean go = false;
+    private Double point = 0.0001;
+    
     /**
      * Al construir hacemos un query para obtener los datos iniciales.
      * @param periodo 
      */
-    public Indicator(Integer n){
+    public Indicator(int p, int n) {
+        this.periodo = p;
         this.n = n;
+        //Llenamos el indicador con los n periodos.
+        //this.values = Runner.data.getBufferData(this.n);
+        
+        /*for (int i = 1; i < dif; i++) {
+            temp.remove(0);
+        }
+        for (int i = temp.size(); i >=0; i--) {
+            if (i % n == 0) {
+                if (cont < periodo) {
+                    str.append(" "+temp.get(i-1)+",");
+                    data.add(temp.get(i-1));
+                    cont++;
+                }
+            }
+        }*/
     }
     
     /**
-     * Actualiza el array de valores con un valor nuevo 
-     * @param val 
+     * Update of the data base.
+     * @param val new value.
      */
     public void refreshValues(Double val) {
         this.values.remove(values.size()-1);
@@ -58,8 +78,11 @@ abstract class Indicator {
     
     /**
      * Cada indicador debe de implementar este método en donde deberá también
-     * llamar al método refreshValues si quiere actualizar los values.
+     * llamar al método refreshValues si quiere que actualizar los values.
      * @param val 
      */
     abstract public void rollOn(Double val);
+    
+    @Override
+    abstract public boolean equals(Object o);
 }
