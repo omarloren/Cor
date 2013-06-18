@@ -36,7 +36,7 @@ public class Controller {
      * @param n Periodo de bandas deseado.
      * @return Objecto del Bollinger.
      */
-    public BollingerBands newBollingerBand(int p, int n){
+    public BollingerBands newBollingerBand(String s, int p, int n){
         BollingerBands b = null;
         for (Indicator i : indicatorsPool){
             if (i.equals(b)) {
@@ -45,7 +45,7 @@ public class Controller {
             }
         }
         if (b == null) {
-            b  = new BollingerBands(p, n);
+            b  = new BollingerBands(s, p, n);
         }
         return b;
     }

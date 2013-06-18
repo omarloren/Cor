@@ -49,9 +49,9 @@ public class BollingerBands extends Indicator{
      */
     private int n;
     
-    public BollingerBands(int p, int n) {
-        super(p,n);
-        
+    public BollingerBands(String s, int p, int n) {
+        super(s, p, n);
+       
         simpleMovingAverage = new SimpleMovingAverage(getN(), this.values);
         standardDeviation = new StandardDeviation(getN(), this.values);
         // Calculates simple moving average (SMA)

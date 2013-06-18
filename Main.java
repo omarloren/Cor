@@ -1,16 +1,20 @@
 
 import dao.Mongo;
+import io.Inputs;
+import trade.indicator.Controller;
 
 
 /**
  * Clase para probar los objectos.
  * @author omar
  */
-public class Main extends Mongo {
+public class Main{
     
     public void run(){
-        this.setDB("history").setCollection("EURUSD");
-        System.out.println(this);
+        Inputs.build();
+        Mongo.build();
+        Controller c = new Controller();
+        c.newBollingerBand("EURUSD",5, 10);
     }
     
     public static void main(String[] args) {

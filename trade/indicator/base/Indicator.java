@@ -1,6 +1,7 @@
 
 package trade.indicator.base;
 
+import dao.Mongo;
 import java.util.ArrayList;
 
 /**
@@ -11,42 +12,40 @@ public abstract class Indicator {
     /**
      * Values - Son los datos con los que el indicador trabajará. 
      */
-    public ArrayList<Double> values;
-    /**
-     * Tamaño del indicador.
-     */
-    private int n;
-    
-    private int periodo;
-    
+    public ArrayList<Double> values = new ArrayList();
     /**
      * Variable para verificar que se tiene la cantidad correcta de valores.
      */
     public boolean go = false;
-    private Double point = 0.0001;
+    /**
+     * Tamaño del indicador.
+     */
+    private int n;
+    private int periodo;
+    private String symbol;
+    
+    private Mongo mongo;
     
     /**
      * Al construir hacemos un query para obtener los datos iniciales.
      * @param periodo 
      */
-    public Indicator(int p, int n) {
+    public Indicator(String s,int p, int n) {
+        
+        this.mongo = new Mongo().setDB("history").setCollection(s);
         this.periodo = p;
         this.n = n;
-        //Llenamos el indicador con los n periodos.
-        //this.values = Runner.data.getBufferData(this.n);
+        this.symbol = s;
+        this.mongo.setCollection(this.symbol);
+        ArrayList<Double> temp = this.mongo.getBufferData(this.symbol, p, n);
+        System.out.println(temp.size());
         
-        /*for (int i = 1; i < dif; i++) {
-            temp.remove(0);
-        }
-        for (int i = temp.size(); i >=0; i--) {
-            if (i % n == 0) {
-                if (cont < periodo) {
-                    str.append(" "+temp.get(i-1)+",");
-                    data.add(temp.get(i-1));
-                    cont++;
-                }
+        for (int i = 0; i < temp.size(); i++) {
+            //TODO - Verificar la integridad de esto.
+            if (i % p == 0) {
+                this.values.add(temp.get(i));
             }
-        }*/
+        }
     }
     
     /**
@@ -66,16 +65,24 @@ public abstract class Indicator {
     }
 
     /**
-     * @return the n.
+     * @return Tamaño del indicador.
      */
     public int getN() {
         return this.n;
     }
         
-    public Double getPoint() {
-        return this.point;
+    /**
+     * @return Periodo del indicador
+     */    
+    public int getPeriodo(){
+        return this.periodo;
     }
-    
+    /**
+     * @return Moneda del indicador
+     */
+    public String getSymbol(){
+        return this.symbol;
+    }
     /**
      * Cada indicador debe de implementar este método en donde deberá también
      * llamar al método refreshValues si quiere que actualizar los values.

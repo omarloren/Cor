@@ -16,21 +16,22 @@ import java.util.Set;
  * @author omar
  */
 public class Mongo {
-    
-    private com.mongodb.Mongo mongoConn;
-    private DB db;
+    //Conexión con Mongo
+    private static com.mongodb.Mongo mongoConn ;
+    //Al inicio es la DB por default.
+    private static DB db ;
     private DBCollection coll;
-    private Map<String,ArrayList> currencies;
-    public Mongo(){
-        this.mongoConn = Connections.getMongoConnection();
-        this.db = this.mongoConn.getDB("local"); //Le damos la db default
-        String[] c = Inputs.getCurrencies();
-        
-        for (int i=0; i <= c.length; i++){
-            this.currencies.put(c[i], new ArrayList());
-        }
+    //Buffer de precios para las monedas, tradicionalmente usado por indicadores.
+    private static Map<String,ArrayList> currencies;
+    /**
+     * Inicializa la conexión con mongo, y la db. Debe de ser llamado antes de 
+     * usar cualquier método de esta clase.
+     */
+    public static void build(){
+        mongoConn = Connections.getMongoConnection();
+        db = mongoConn.getDB("local");
+        currencies = Inputs.getCurrencies();
     }
-    
     /**
      * Añade una DB.
      * @param db Nombre de la db.
@@ -73,27 +74,53 @@ public class Mongo {
      * @param n
      * @return 
      */
-    public ArrayList getBufferData(String s, int n){
-        ArrayList base = this.currencies.get(n);
+    public ArrayList getBufferData(String s, int p, int n){
+        ArrayList base = this.currencies.get(s);
         ArrayList t = new ArrayList();
+        this.setCollection(s);
+        int cant = n * p;
         DBCursor cursor ;
-        for (int i = 0; i < n; i++) {
-            t.add(base.get(i));
-        }
         /**
-         * Si los datos requeridos exeden los existentes hacemos un query para
-         * obtenerlos
+         * Obtenemos la última hora para saber qué tanto extenderemos el query.
+         * Ej. Si la ultima hora es 161700,p = 5 y n es 3 entonces debemos obtener 
+         *     los 15 datos apartir de las 161500. 
+         * en este caso devolveremos 17 valores.
          */
-        if (n > base.size()) {    
-            int dif = n - base.size();
-            cursor = this.coll.find().sort(new BasicDBObject("$natural", -1)).limit(dif);
-            while (cursor.hasNext()) {
-                DBObject curTemp = cursor.next();
-                t.add(curTemp.get("open"));
+        //int dif = this.getMinutos((Integer)this.coll.find()
+        //        .sort(new BasicDBObject("$natural", -1)).limit(1).next().get("hour"));
+        
+        if (base.size() > 0) {
+            for (int i = 0; i < cant; i++) {
+                t.add(base.get(i));
             }
         }
-        
+        /**
+         * Si los datos requeridos excedén los existentes hacemos un query para
+         * obtenerlos
+         */
+        if (cant > base.size()) {    
+            //Obtenemos 
+            cursor = this.coll.find().sort(new BasicDBObject("$natural", -1)).limit((cant-base.size()));
+            
+            while (cursor.hasNext()) {
+                DBObject curTemp = cursor.next();
+                t.add(curTemp.get("Open"));
+                this.currencies.get(s).add(curTemp.get("Open"));
+            }
+        }
         return t;
+    }
+    /**
+     * No se si usare esto, estupida loss precision.
+     * @param i
+     * @return 
+     */
+    private int getMinutos(Integer i){
+        
+        Double d = (i /100) * 0.01;
+        Integer n = d.intValue();
+        System.out.println(d +" "+n);
+        return  (int)((d - n) * 100);
     }
     
     @Override

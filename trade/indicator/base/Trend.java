@@ -1,6 +1,8 @@
 
 package trade.indicator.base;
 
+import io.Inputs;
+
 /**
  * "Indicador" que busca que cierto numeros de variables x se encuentren en un 
  * rango de variables y.
@@ -14,15 +16,15 @@ public class Trend extends Indicator{
     private int y2 = 0; //Segundo intervalo y
     private int c = 0; //Coincidencias    
     private Double last_val = 0.0;
-    
-    public Trend(int p, int x1, int x2, int y1, int y2, int c){
-        super(p,x1);
+    private Double point;
+    public Trend(String s, int p, int x1, int x2, int y1, int y2, int c){
+        super(s, p, x1);
         this.x1 = x1;
         this.x2 = x2;
         this.y1 = y1;
         this.y2 = y2;
         this.c = c;
-        System.out.println(x1+" "+x2);
+        this.point = Inputs.getPoint(this.getSymbol());
     }
     /**
      * Buscamos una tendencia alcista, devolviendo el número de coincidencias
@@ -34,8 +36,8 @@ public class Trend extends Indicator{
         int cont = 0;
         for (int i = 0; i < (this.x1 - this.x2); i++) {
             double current = this.values.get(this.x1 + i);
-            if (current < (this.last_val + this.y1 * this.getPoint()) && 
-                    this.values.get(i) > (this.last_val + this.y2 * this.getPoint())){
+            if (current < (this.last_val + this.y1 * this.point) && 
+                    this.values.get(i) > (this.last_val + this.y2 * this.point)){
                 cont++;
             }
         }
@@ -56,8 +58,8 @@ public class Trend extends Indicator{
         int cont = 0;
         for (int i = 0; i < (this.x1 - this.x2); i++) {
             double current = this.values.get(this.x1 + i);
-            if (this.values.get(i) > (this.last_val + this.y2 * this.getPoint()) && 
-                    this.values.get(i) < (this.last_val + this.y1 * this.getPoint())){
+            if (this.values.get(i) > (this.last_val + this.y2 * this.point) && 
+                    this.values.get(i) < (this.last_val + this.y1 * this.point)){
                 cont++;
             }
         }
