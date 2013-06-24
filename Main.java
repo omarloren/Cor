@@ -15,7 +15,8 @@ public class Main{
         Inputs.build();
         Mongo.build();
         Controller c = new Controller();
-        c.newBollingerBand("USDCHF", 5, 2);
+        c.newBollingerBand("EURUSD", 15, 10);
+        
     }
     
     public static void main(String[] args) {

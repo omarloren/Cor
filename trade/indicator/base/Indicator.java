@@ -32,7 +32,8 @@ public abstract class Indicator {
     private Mongo mongo;
 
     /**
-     * Al construir hacemos un query para obtener los datos iniciales.
+     * Al construir hace un query para obtener los datos iniciales del indicador
+     * ademas asegura la fiabilidad de estos.
      * @param periodo 
      */
     public Indicator(String s,int p, int n) {
@@ -44,10 +45,11 @@ public abstract class Indicator {
         this.mongo.setCollection(this.symbol);
         ArrayList<Object[]> temp = this.mongo.getCoinBuffer(this.symbol, p, n);
         int lastMin = (int)temp.get(0)[0];
+        
         Double lastOpen = (Double)temp.get(0)[1];
         for (int i = 0; i < temp.size(); i++) { 
             int min = (int)temp.get(i)[0];
-            int dif;
+            int dif = 0;
             Double open = (Double)temp.get(i)[1];
             /**
              * Buscamos si hay un salto de hora, puede que pase lo siguiente:
@@ -59,30 +61,33 @@ public abstract class Indicator {
             } else {
                 dif = lastMin - min;
             }
-            /**
-             * Si min es modulo de p, entonces.
-             */
+            //Si min es modulo de p, entonces.          
             if (isMod(p, min)) {
                 this.values.add(open);
-                //System.out.println("Add "+min + " "+open);
+                //System.out.println("Add 3 "+min + " "+open);
             } else if (dif < 0) {
-                for (int j = lastMin; j > dif; j--) {
-                    if (this.isMod(p, j)) {
-                        this.values.add(lastOpen);
-                        //System.out.println("Add "+lastMin + " "+lastOpen);
+                //Si hay cambio de hora y hay gap en este cambio.
+                if (dif + lastMin >= 0) {
+                    for (int j = lastMin; j > dif; j--) {
+                        if (this.isMod(p, j)) {
+                            this.values.add(lastOpen);
+                            //System.out.println("Add 2 "+lastMin + " "+lastOpen);
+                        }
                     }
                 }
             } else if (dif > 1) {
                 for (int j = 0; j < dif; j++) {
-                    if (this.isMod(p, j)) {
+                    if (this.isMod(p, (j-lastMin))) {
                         this.values.add(lastOpen);
-                        //System.out.println("Add "+lastMin + " "+lastOpen);
+                        //System.out.println("Add 1 "+lastMin + " "+ lastOpen);
                     }
                 }
             }
-           
             lastMin = min;
             lastOpen = open;
+            if( this.values.size() == n) {
+                break;
+            }
         }
     }
     /**
@@ -93,6 +98,7 @@ public abstract class Indicator {
      */
     private boolean isMod(int p, int m){
         int mod = (m - (p * (m / p)));
+        //System.out.println(p +" " + m + " " +mod);
          if( mod == 0 ){
             return true;
         }else{
