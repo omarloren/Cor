@@ -9,7 +9,6 @@ import com.mongodb.DBObject;
 import io.Inputs;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Manejo de Objectos básicos para mantener conexión con MongoDB.
@@ -21,8 +20,12 @@ public class Mongo {
     //Al inicio es la DB por default.
     private static DB db ;
     private DBCollection coll;
-    //Buffer de precios para las monedas, tradicionalmente usado por indicadores.
-    private static Map<String,ArrayList> currencies;
+    /**
+     * Buffer de precios para las monedas, tradicionalmente usado por indicadores,
+     * tiene un ArrayList<Object[]> por que tenemos que alamacenar el minuto y 
+     * el precio que se genero en ese minuto.
+     */
+    private static Map<String,ArrayList<Object[]>> currencies;
     /**
      * Inicializa la conexión con mongo, y la db. Debe de ser llamado antes de 
      * usar cualquier método de esta clase.
@@ -69,58 +72,63 @@ public class Mongo {
     /**
      * Retorna el N de valores(Aperturas de minuto) obtenidos de la BD, además
      * guarda un buffer de datos, si hacemos un query de 100 datos estos se 
-     * guardarán en un buffer y seran repornados para peticiones posteriores.
+     * guardarán en un buffer y serán retornados para peticiones posteriores.
      * @param s
      * @param n
      * @return 
      */
-    public ArrayList getBufferData(String s, int p, int n){
-        ArrayList base = this.currencies.get(s);
-        ArrayList t = new ArrayList();
+    public ArrayList getCoinBuffer(String s, int p, int n){
+        //Buffer del s.
+        ArrayList<Object[]> base = this.currencies.get(s);
+        
+        ArrayList<Object[]> t = new ArrayList();
         this.setCollection(s);
         int cant = n * p;
         DBCursor cursor ;
-        /**
-         * Obtenemos la última hora para saber qué tanto extenderemos el query.
-         * Ej. Si la ultima hora es 161700,p = 5 y n es 3 entonces debemos obtener 
-         *     los 15 datos apartir de las 161500. 
-         * en este caso devolveremos 17 valores.
-         */
-        //int dif = this.getMinutos((Integer)this.coll.find()
-        //        .sort(new BasicDBObject("$natural", -1)).limit(1).next().get("hour"));
         
+        //Si hay datos en el buffer
         if (base.size() > 0) {
-            for (int i = 0; i < cant; i++) {
-                t.add(base.get(i));
+            //Si el buffer puede satisfacer el request.
+            if (base.size() > cant) {
+                for (int i = 0; i < cant; i++) {
+                    t.add(base.get(i));
+                }    
+            } else {
+                //Si no hasta donde pueda 
+                for (int i = 0; i < base.size(); i++) {
+                    t.add(base.get(i));
+                }
             }
         }
         /**
-         * Si los datos requeridos excedén los existentes hacemos un query para
-         * obtenerlos
-         */
-        if (cant > base.size()) {    
-            //Obtenemos 
+         * Si hemos alcanzado la cantidad necesaria, hacemos un query para obtener
+         * los datos faltantes.
+         */ 
+        if (t.size() < cant) {    
+            //Query
             cursor = this.coll.find().sort(new BasicDBObject("$natural", -1)).limit((cant-base.size()));
-            
             while (cursor.hasNext()) {
                 DBObject curTemp = cursor.next();
-                t.add(curTemp.get("Open"));
-                this.currencies.get(s).add(curTemp.get("Open"));
+                Object d[] = new Object[2];
+                d[0] = this.getMinutos((Integer)curTemp.get("hour"));
+                d[1] = curTemp.get("Open");
+                t.add(d);
+                //Alimentamos nuestro buffer con nuevos datos.
+                this.currencies.get(s).add(d);             
             }
         }
         return t;
     }
     /**
-     * No se si usare esto, estupida loss precision.
+     * Extrae los minutos y los convierte en enteros.
      * @param i
      * @return 
      */
-    private int getMinutos(Integer i){
+    private Integer getMinutos(Integer i){
         
-        Double d = (i /100) * 0.01;
-        Integer n = d.intValue();
-        System.out.println(d +" "+n);
-        return  (int)((d - n) * 100);
+        String s = i.toString().substring(2, 4);
+        
+        return  (new Integer(s));
     }
     
     @Override

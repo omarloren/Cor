@@ -2,6 +2,7 @@
 import dao.Mongo;
 import io.Inputs;
 import trade.indicator.Controller;
+import trade.indicator.base.BollingerBands;
 
 
 /**
@@ -14,7 +15,7 @@ public class Main{
         Inputs.build();
         Mongo.build();
         Controller c = new Controller();
-        c.newBollingerBand("EURUSD",5, 10);
+        c.newBollingerBand("USDCHF", 5, 2);
     }
     
     public static void main(String[] args) {

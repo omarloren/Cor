@@ -1,4 +1,3 @@
-
 package trade.indicator.base;
 
 import dao.Mongo;
@@ -9,8 +8,9 @@ import java.util.ArrayList;
  * @author omar
  */
 public abstract class Indicator {
+
     /**
-     * Values - Son los datos con los que el indicador trabajará. 
+     * Values - Son los datos con los que el indicador trabajará.
      */
     public ArrayList<Double> values = new ArrayList();
     /**
@@ -18,14 +18,19 @@ public abstract class Indicator {
      */
     public boolean go = false;
     /**
-     * Tamaño del indicador.
+     * Tamaño de el indicador.
      */
     private int n;
+    /**
+     * Periodo del indicador: 1M, 5M, 30M, 1HR, etc.
+     */
     private int periodo;
+    /**
+     * Moneda del indicador.
+     */
     private String symbol;
-    
     private Mongo mongo;
-    
+
     /**
      * Al construir hacemos un query para obtener los datos iniciales.
      * @param periodo 
@@ -37,14 +42,61 @@ public abstract class Indicator {
         this.n = n;
         this.symbol = s;
         this.mongo.setCollection(this.symbol);
-        ArrayList<Double> temp = this.mongo.getBufferData(this.symbol, p, n);
-        System.out.println(temp.size());
-        
-        for (int i = 0; i < temp.size(); i++) {
-            //TODO - Verificar la integridad de esto.
-            if (i % p == 0) {
-                this.values.add(temp.get(i));
+        ArrayList<Object[]> temp = this.mongo.getCoinBuffer(this.symbol, p, n);
+        int lastMin = (int)temp.get(0)[0];
+        Double lastOpen = (Double)temp.get(0)[1];
+        for (int i = 0; i < temp.size(); i++) { 
+            int min = (int)temp.get(i)[0];
+            int dif;
+            Double open = (Double)temp.get(i)[1];
+            /**
+             * Buscamos si hay un salto de hora, puede que pase lo siguiente:
+             * Si lastMin = 2 y min = 59 hubo cambio de hora, entoncés buscamos
+             * recorrerlo de -1 a 2 buscando un Mod.
+             */
+            if (lastMin < min) {
+                dif = (min - 60);
+            } else {
+                dif = lastMin - min;
             }
+            /**
+             * Si min es modulo de p, entonces.
+             */
+            if (isMod(p, min)) {
+                this.values.add(open);
+                //System.out.println("Add "+min + " "+open);
+            } else if (dif < 0) {
+                for (int j = lastMin; j > dif; j--) {
+                    if (this.isMod(p, j)) {
+                        this.values.add(lastOpen);
+                        //System.out.println("Add "+lastMin + " "+lastOpen);
+                    }
+                }
+            } else if (dif > 1) {
+                for (int j = 0; j < dif; j++) {
+                    if (this.isMod(p, j)) {
+                        this.values.add(lastOpen);
+                        //System.out.println("Add "+lastMin + " "+lastOpen);
+                    }
+                }
+            }
+           
+            lastMin = min;
+            lastOpen = open;
+        }
+    }
+    /**
+     * 
+     * @param p
+     * @param m
+     * @return 
+     */
+    private boolean isMod(int p, int m){
+        int mod = (m - (p * (m / p)));
+         if( mod == 0 ){
+            return true;
+        }else{
+            return false;
         }
     }
     
@@ -74,13 +126,13 @@ public abstract class Indicator {
     /**
      * @return Periodo del indicador
      */    
-    public int getPeriodo(){
+    public int getPeriodo() {
         return this.periodo;
     }
     /**
      * @return Moneda del indicador
      */
-    public String getSymbol(){
+    public String getSymbol() {
         return this.symbol;
     }
     /**

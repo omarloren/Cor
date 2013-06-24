@@ -5,8 +5,11 @@ import trade.indicator.base.util.SimpleMovingAverage;
 import trade.indicator.base.util.StandardDeviation;
 
 /**
+ * For Bollinger bands: a middle band being an N-period simple moving average an
+ * upper band at K times an N-period standard deviation above the middle band a
+ * lower band at K times an N-period standard deviation below the middle band
  *
- * @author Iván
+ * @author Ivan
  */
 public class BollingerBands extends Indicator{
 
@@ -37,18 +40,7 @@ public class BollingerBands extends Indicator{
 	 *
      */
     private double upperBand = 0;
-    
-    
-    /**
-     * For Bollinger bands: a middle band being an N-period simple moving
-     * average an upper band at K times an N-period standard deviation above the
-     * middle band a lower band at K times an N-period standard deviation below
-     * the middle band
-     *
-     * This is the 'N' value
-     */
-    private int n;
-    
+        
     public BollingerBands(String s, int p, int n) {
         super(s, p, n);
        
@@ -117,6 +109,6 @@ public class BollingerBands extends Indicator{
     
     @Override
     public String toString(){
-        return (this.n+" => Up:"+this.upperBand + " Middle:"+this.middleBand + " Down:"+this.lowerBand);
+        return ("#"+this.getN()+" => Up:"+this.upperBand + " Middle:"+this.middleBand + " Down:"+this.lowerBand);
     }
 }

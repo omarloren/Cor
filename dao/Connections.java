@@ -13,7 +13,10 @@ import java.util.logging.Logger;
  */
 public class Connections {
     private static com.mongodb.Mongo mongo;
-    
+    /**
+     * Obtiene conexión con Mongo.
+     * @return 
+     */
     static synchronized com.mongodb.Mongo getMongoConnection() {
         if (mongo == null) {
             try {

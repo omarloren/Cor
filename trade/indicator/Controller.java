@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import trade.indicator.base.*;
 
 /**
- * Controlador de indicadores, desde aqui se crean y se  además se 
- * controla que sean refrescados,
+ * Interfaz de los controladores, solo se pueden crear atravez de esta clase,
+ * se controla que sean refrescados, etc.
  * @author omar
  */
 public class Controller {

@@ -33,13 +33,17 @@ public class Inputs {
         currencies = inputs.getProperty("currencies").split(",");
     }
     /**
-     * Devuelve las monedas señaladas en el archivo de configuración.
+     * Devuelve las monedas señaladas en el archivo de configuración, en forma
+     * de HashMap de String y Double[].
      * @return 
      */
-    public static Map<String,ArrayList> getCurrencies(){
-        Map<String,ArrayList> r = new HashMap();
+    public static Map<String,ArrayList<Object[]>> getCurrencies(){
+        Map<String,ArrayList<Object[]>> r = new HashMap();
+        //Para poder devolver un ArrayList de Object.
+        ArrayList<Object[]> a = new ArrayList();
+        
         for (int i=0; i < currencies.length; i++){
-            r.put(currencies[i], new ArrayList());
+            r.put(currencies[i], a);
         }
         return r;
     }
@@ -61,11 +65,10 @@ public class Inputs {
         if(m.find()){
             r = m.group();
         }*/
-         if(symbol.equals("USDJPY")){
+         if (symbol.equals("USDJPY")) {
              return 0.001;
          } else {
              return 0.00001;
          }
     }
-    
 }
