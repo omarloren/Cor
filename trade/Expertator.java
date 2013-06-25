@@ -63,8 +63,8 @@ public abstract class Expertator {
         return this;
     }
     
-    public BollingerBands iBand(int p, int n){
-        return this.controller.newBollingerBand(this.Symbol, p, n);
+    public Controller iController(){
+        return this.controller;
     }
     /**
      * Obtiene el total de ordenes de para cierto magic pero del symbol 
