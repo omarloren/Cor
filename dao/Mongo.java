@@ -41,7 +41,7 @@ public class Mongo {
      * @return Self => Por si quieres Method Chaining.
      */
     public Mongo setDB(String db){
-        this.db = this.mongoConn.getDB(db);
+        this.db = mongoConn.getDB(db);
         return this;
     }
     
@@ -51,7 +51,7 @@ public class Mongo {
      * @return Self => Por si quieres Method Chaining.
      */
     public Mongo setCollection(String coll){
-        this.coll = this.db.getCollection(coll);
+        this.coll = db.getCollection(coll);
         return this;
     }
     
@@ -59,7 +59,7 @@ public class Mongo {
      * @return Objecto de la DB.
      */
     public DB getDB(){
-        return this.db;
+        return db;
     }
     
     /**
@@ -79,7 +79,7 @@ public class Mongo {
      */
     public ArrayList getCoinBuffer(String s, int p, int n){
         //Buffer del s.
-        ArrayList<Object[]> base = this.currencies.get(s);
+        ArrayList<Object[]> base = currencies.get(s);
         
         ArrayList<Object[]> t = new ArrayList();
         this.setCollection(s);
@@ -114,7 +114,7 @@ public class Mongo {
                 d[1] = curTemp.get("Open");
                 t.add(d);
                 //Alimentamos nuestro buffer con nuevos datos.
-                this.currencies.get(s).add(d);             
+                currencies.get(s).add(d);             
             }
         }
         return t;
@@ -133,7 +133,7 @@ public class Mongo {
     
     @Override
     public String toString() {
-        return ("Db => " + this.db.getName()
+        return ("Db => " + db.getName()
                 + "=> Coll => " + this.coll.getName() + " =>" + this.coll.count() + " records.");
     }
 }

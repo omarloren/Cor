@@ -85,6 +85,7 @@ public abstract class Indicator {
             }
             lastMin = min;
             lastOpen = open;
+            //Si Ya tenemos los datos necesarios.
             if( this.values.size() == n) {
                 break;
             }
