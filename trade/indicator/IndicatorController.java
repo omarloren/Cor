@@ -9,23 +9,28 @@ import trade.indicator.base.*;
  * se controla que sean refrescados, etc.
  * @author omar
  */
-public class Controller {
+public class IndicatorController {
     
     /**
      * Actualmente tenemos un array para todos los indicadores, pero podriamos 
      * tener uno para cada moneda y/o periodo.
      */
     private static ArrayList<Indicator> indicatorsPool = new ArrayList();
-    public Controller(){
+    public IndicatorController(){
         //
     }
+    
     /**
-     * Refresca los indicadores con un nuevo precio.
-     * @param r 
+     * Recibe precios de apertura de minuto y actualiza a los indicadores, 
+     * dependiendo de cuál es su periodo.
+     * @param o 
      */
-    public void update(Double r){
-        for(Indicator i : indicatorsPool ){
-            i.refreshValues(r);
+    public void setOpenMinute(Double o){
+        //TODO - Hacer que verifique si el precio corresponde a algun indicador.
+        for (Indicator i : indicatorsPool ) {
+            if (i.getPeriodo() == 5) {
+                i.refreshValues(o);
+            }
         }
     }
     /**

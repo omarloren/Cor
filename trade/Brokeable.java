@@ -2,6 +2,7 @@
 package trade;
 
 import java.util.ArrayList;
+import trade.indicator.IndicatorController;
 
 /**
  * Control de transacciones(ordenés), proporciona una interfaz para abrir o 
@@ -15,9 +16,9 @@ public abstract class Brokeable {
      * Todas las ordenes abiertas.
      */
     private ArrayList<Ordener> orders = new ArrayList();
-    
+    static IndicatorController indicatorController;
     public Brokeable(){
-        //No sé qué :/
+        indicatorController = new IndicatorController();
     }    
     /**
      * Revisa qué compras excedieron sus limites.
@@ -109,6 +110,17 @@ public abstract class Brokeable {
         }
         return r; 
     }
+    /**
+     * @return Controlador de indicadores.
+     */
+    public IndicatorController getIndicatorController(){
+        return indicatorController;
+    }
+    /**
+     * Añadimos precios de minutos para los indicadores.
+     * @param open 
+     */
+    public abstract  void setOpenMin(Double open);
     
     /**
      * Cuando una orden sea abierta exitosamente.

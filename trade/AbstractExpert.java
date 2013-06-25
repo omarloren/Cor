@@ -2,7 +2,7 @@
 package trade;
 
 import java.util.ArrayList;
-import trade.indicator.Controller;
+import trade.indicator.IndicatorController;
 import trade.indicator.base.BollingerBands;
 
 /**
@@ -11,7 +11,7 @@ import trade.indicator.base.BollingerBands;
  * sistema.
  * @author omar
  */
-public abstract class AbstractExpertator {
+public abstract class AbstractExpert {
     Brokeable broker;
     String Symbol ;
     Integer Period;
@@ -19,18 +19,17 @@ public abstract class AbstractExpertator {
     Double Bid = null;
     Double openMin = null;       
     Double Point = null; //Valor del Pip
-    private Controller controller;
+
     /**
      * Este es el "contructor" de la clase, favor de llamarlo a continuación de 
      * crear este objecto, ¡GRACIAS!.
      * @param broker 
      */
-    public AbstractExpertator builder(Brokeable broker, String symbol, Integer period){
+    public AbstractExpert builder(Brokeable broker, String symbol, Integer period){
         this.broker = broker;
         this.Symbol = symbol;
         this.Period = period;
         this.Point = this.Symbol.equals("USDJPY")? 0.001 :0.0001;
-        this.controller = new Controller();
         return this;
     }
     /**
@@ -38,7 +37,7 @@ public abstract class AbstractExpertator {
      * @param bid
      * @return 
      */
-    public AbstractExpertator setBid(Double bid){
+    AbstractExpert setBid(Double bid){
         this.Bid = bid;
         return this;
     }
@@ -48,7 +47,7 @@ public abstract class AbstractExpertator {
      * @param ask
      * @return 
      */
-    public AbstractExpertator setAsk(Double ask){
+    AbstractExpert setAsk(Double ask){
         this.Ask = ask;
         return this;
     }
@@ -58,13 +57,13 @@ public abstract class AbstractExpertator {
      * @param open
      * @return 
      */
-    public AbstractExpertator setOpenMin(Double open){
+    public AbstractExpert setOpenMin(Double open){
         this.openMin = open;
         return this;
     }
     
-    public Controller iController(){
-        return this.controller;
+    public BollingerBands iBand(int p, int n){
+        return this.broker.getIndicatorController().newBollingerBand(this.Symbol, this.Period, n);
     }
     /**
      * Obtiene el total de ordenes de para cierto magic pero del symbol 
