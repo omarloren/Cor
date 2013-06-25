@@ -98,6 +98,10 @@ public abstract class AbstractExpert {
     public int getPeriod(){
         return this.Period;
     }
+    
+    public Brokeable getBrokeable(){
+        return this.broker;
+    }
     /**
      * Abre una posición, la clase que implemente esto, tiene que crear un 
      * objecto Ordener y enviarselo al broker.
