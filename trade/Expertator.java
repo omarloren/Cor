@@ -3,6 +3,7 @@ package trade;
 
 import java.util.ArrayList;
 import trade.indicator.Controller;
+import trade.indicator.base.BollingerBands;
 
 /**
  * Clase base para un expert, es la API para que un expert controle la apertura
@@ -18,7 +19,7 @@ public abstract class Expertator {
     Double Bid = null;
     Double openMin = null;       
     Double Point = null; //Valor del Pip
-    Controller controller;
+    private Controller controller;
     /**
      * Este es el "contructor" de la clase, favor de llamarlo a continuación de 
      * crear este objecto, ¡GRACIAS!.
@@ -62,6 +63,9 @@ public abstract class Expertator {
         return this;
     }
     
+    public BollingerBands iBand(int p, int n){
+        return this.controller.newBollingerBand(this.Symbol, p, n);
+    }
     /**
      * Obtiene el total de ordenes de para cierto magic pero del symbol 
      * actual, normalmente lo usamos si queremos cerrar las ordenes.
@@ -86,10 +90,6 @@ public abstract class Expertator {
     public Boolean isReady(){
         return (this.Ask != null && this.Bid != null && this.openMin != null &&
                 this.Period != null && this.Symbol != null && this.broker != null);
-    }
-    
-    public Controller indicator(){
-        return this.controller;
     }
     
     /**
