@@ -96,6 +96,9 @@ public abstract class Expertator {
         return this.Symbol;
     }
     
+    public int getPeriod(){
+        return this.Period;
+    }
     /**
      * Abre una posición, la clase que implemente esto, tiene que crear un 
      * objecto Ordener y enviarselo al broker.
