@@ -11,7 +11,7 @@ import trade.indicator.base.BollingerBands;
  * sistema.
  * @author omar
  */
-public abstract class Expertator {
+public abstract class AbstractExpertator {
     Brokeable broker;
     String Symbol ;
     Integer Period;
@@ -25,7 +25,7 @@ public abstract class Expertator {
      * crear este objecto, ¡GRACIAS!.
      * @param broker 
      */
-    public Expertator builder(Brokeable broker, String symbol, Integer period){
+    public AbstractExpertator builder(Brokeable broker, String symbol, Integer period){
         this.broker = broker;
         this.Symbol = symbol;
         this.Period = period;
@@ -38,7 +38,7 @@ public abstract class Expertator {
      * @param bid
      * @return 
      */
-    public Expertator setBid(Double bid){
+    public AbstractExpertator setBid(Double bid){
         this.Bid = bid;
         return this;
     }
@@ -48,7 +48,7 @@ public abstract class Expertator {
      * @param ask
      * @return 
      */
-    public Expertator setAsk(Double ask){
+    public AbstractExpertator setAsk(Double ask){
         this.Ask = ask;
         return this;
     }
@@ -58,7 +58,7 @@ public abstract class Expertator {
      * @param open
      * @return 
      */
-    public Expertator setOpenMin(Double open){
+    public AbstractExpertator setOpenMin(Double open){
         this.openMin = open;
         return this;
     }
@@ -110,18 +110,5 @@ public abstract class Expertator {
      */
     public abstract void orderSend(Double price,Double lotes, char side,Double sl, Double tp);
     
-   /**
-     * Se llama una vez al inicializar el expert, usualmente es usado para 
-     * inicializar variables locales.
-     */
-    public abstract void Init();
-    /**
-     * Evento de tick llamado al recibir un nuevo precio(Bid), es en donde todo
-     * pasa.
-     */
-    public abstract void onTick();
-    /**
-     * En caso de ser una prueba, se llama al finalizar la misma.
-     */
-    public abstract void onDone();
+   
 }
