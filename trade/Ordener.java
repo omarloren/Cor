@@ -30,7 +30,7 @@ public abstract class Ordener {
      */
     private Double lotes;
     
-    private Integer magic;
+    private Integer magicma;
     /*
      * Cruce de la orden 
      */
@@ -68,12 +68,71 @@ public abstract class Ordener {
 
     public Ordener(String symbol, Double lotes, Character side, Double price) {
         this.symbol = symbol;
-        this.lotes = lotes;
+        this.lotes = lotes * 10000; // Añadir esto a archivo de CONFIG!
         this.openPrice = price;
         this.side = side;
         this.sideStr = this.side == '1' ? "Buy" : "sell";
         this.averse = this.side == '1' ? '2' : '1';
         this.active = true;
+        this.base = this.symbol.substring(0, 3);
+    }
+    /**
+     * Añade la razón por la que la operacion fué cerrada.
+     * @param reason
+     * @return 
+     */
+    public Ordener setReason(String reason){
+        return this;
+    }
+    /**
+     * Añade Stop loss y Take Profit.
+     * @param sl
+     * @param tp
+     * @return 
+     */
+    public Ordener setStopAndTake(Double sl, Double tp) {
+        this.sl = sl;
+        this.tp = tp;
+        return this;
+    }
+    
+    public Ordener setOpenPrice(Double open){
+        this.openPrice = open;
+        return this;
+    }
+    
+    /**
+     * Añade Precio de cierre.
+     * @param close
+     * @return 
+     */
+    public Ordener setClosePrice(Double close){
+        this.closePrice = close;
+        this.active = false;
+        return this;
+    }
+    
+    public Ordener setActive(Boolean active){
+        this.active = active;
+        return this;
+    }
+    
+    /**
+     * Añade MAGICMA -> Ver documento de las cosas que nadie puede explicar.
+     * @param magic
+     * @return 
+     */
+    public Ordener setMagic(Integer magicma){
+        this.magicma = magicma;
+        return this;
+    }
+    
+    /**
+     * Si la Orden esta vigente o no.
+     * @return 
+     */
+    public Boolean isActive(){
+        return this.active;
     }
     
     public String getSymbol() {
@@ -121,31 +180,10 @@ public abstract class Ordener {
     }
     
     public Integer getMagic(){
-        return this.magic;
+        return this.magicma;
     }
     
-    public Ordener setReason(String reason){
-        return this;
-    }
-    
-    public Ordener setStopAndTake(Double sl, Double tp) {
-        this.sl = sl;
-        this.tp = tp;
-        return this;
-    }
-    
-    public Ordener setClosePrice(Double close){
-        this.closePrice = close;
-        this.active = false;
-        return this;
-    }
-    
-    public Ordener setMagic(Integer magic){
-        this.magic = magic;
-        return this;
-    }
-    
-    public Boolean isActive(){
-        return this.active;
+    public String getReason(){
+        return this.reason;
     }
 }
