@@ -35,7 +35,11 @@ public class Mongo {
         db = mongoConn.getDB("local");
         currencies = Inputs.getCurrencies();
     }
-    
+    /**
+     * Inserta en cierta collección.
+     * @param coll
+     * @param o 
+     */
     public void insert(String coll, DBObject o){
         this.setCollection(coll);
         this.coll.insert(o);
