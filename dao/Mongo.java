@@ -35,6 +35,12 @@ public class Mongo {
         db = mongoConn.getDB("local");
         currencies = Inputs.getCurrencies();
     }
+    
+    public void insert(String coll, DBObject o){
+        this.setCollection(coll);
+        this.coll.insert(o);
+    }
+    
     /**
      * Añade una DB.
      * @param db Nombre de la db.
@@ -127,7 +133,6 @@ public class Mongo {
     private Integer getMinutos(Integer i){
         
         String s = i.toString().substring(2, 4);
-        
         return  (new Integer(s));
     }
     
