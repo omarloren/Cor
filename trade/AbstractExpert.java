@@ -62,9 +62,6 @@ public abstract class AbstractExpert {
         return this;
     }
     
-    public BollingerBands iBand(int p, int n){
-        return this.broker.getIndicatorController().newBollingerBand(this.Symbol, this.Period, n);
-    }
     /**
      * Obtiene el total de ordenes de para cierto magic pero del symbol 
      * actual, normalmente lo usamos si queremos cerrar las ordenes.
@@ -102,16 +99,27 @@ public abstract class AbstractExpert {
     public Brokeable getBrokeable(){
         return this.broker;
     }
+    
+    /**
+     * Interfaz para crear el indicador de Bollinger Bands.
+     * @param n
+     * @return 
+     */
+    public BollingerBands iBand(int n){
+        return this.broker.getIndicatorController().newBollingerBand(this.Symbol, this.Period, n);
+    }
+    
     /**
      * Abre una posición, la clase que implemente esto, tiene que crear un 
      * objecto Ordener y enviarselo al broker.
      * @param price
      * @param lotes
+     * @param magic
      * @param side
      * @param sl
      * @param tp 
      */
-    public abstract void orderSend(Double price,Double lotes, char side,Double sl, Double tp);
+    public abstract void orderSend(Double price, Double lotes,Integer magic, Character side, Double sl, Double tp);
     
    
 }
