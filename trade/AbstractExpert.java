@@ -121,5 +121,14 @@ public abstract class AbstractExpert {
      */
     public abstract void orderSend(Double price, Double lotes,Integer magic, Character side, Double sl, Double tp);
     
+    /*
+     * Helpersitos para el tiempo.
+     */
+    public abstract int getSeconds();
+    public abstract int getMinutes();
+    public abstract int getHora();
+    public abstract int getDay();
+    public abstract int getMonth();
+    public abstract int getYear();
    
 }
