@@ -109,7 +109,19 @@ public abstract class AbstractExpert {
     public Brokeable getBrokeable() {
         return this.broker;
     }
-
+    
+    public Double getAsk(){
+        return this.Ask;
+    }
+    
+    public Double getBid(){
+        return this.Bid;
+    }
+    
+    public Double getOpenMin(){
+        return this.openMin;
+    }
+    
     /**
      * Interfaz para crear el indicador de Bollinger Bands.
      *
