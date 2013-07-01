@@ -2,13 +2,12 @@
 package io;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -17,27 +16,42 @@ import java.util.regex.Pattern;
  * @author omar
  */
 public class Inputs {
-    private static Properties inputs = new Properties();;
+    private static Properties inputs;
     private static String[] currencies;
+    private static Inputs self;
+    private Extern extern;
+    /**
+     * Manejo de opciones en archivo de configuración.
+     */
+    private Inputs() { /* EMPTYNESS */ }
     
     /**
-     * Inicializa el archivo de propiedades y las monedas, debe de ser llamado
-     * antes de utilizar cualquier método de esta clase.
+     * Objectos que quieran saber algún input, deberán obtener esta instancia.
+     * @return 
      */
-    public static void build(){
-        try {
-            inputs.load(new FileInputStream("inputs.cnf"));
-        } catch (IOException ex) {
-            Logger.getLogger(Inputs.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        currencies = inputs.getProperty("currencies").split(",");
+    public static Inputs getInstance() {
+        if (self == null) {
+            self = new Inputs();
+            try {
+                inputs = new Properties();
+                inputs.load(new FileInputStream("./inputs.cnf"));
+                //this.extern = new Extern(inputs.getProperty("extern_file"));
+            } catch (FileNotFoundException ex) {
+                System.err.println(ex);
+            } catch (IOException ex) {
+                System.err.println(ex);
+            }
+            currencies = inputs.getProperty("currencies").split(",");
+        } 
+        return self;
     }
+    
     /**
      * Devuelve las monedas señaladas en el archivo de configuración, en forma
      * de HashMap de String y Double[].
      * @return 
      */
-    public static Map<String,ArrayList<Object[]>> getCurrencies(){
+    public static Map<String,ArrayList<Object[]>> getCurrencies() {
         Map<String,ArrayList<Object[]>> r = new HashMap();
         //Para poder devolver un ArrayList de Object.
         ArrayList<Object[]> a = new ArrayList();
@@ -47,13 +61,14 @@ public class Inputs {
         }
         return r;
     }
+    
     /**
      * Obtiene el valor de los Pips (Point) para una moneda determinada. 
      * 0.0001 para todas las monedas 0.001 para el USD/JPY.
      * @param symbol
      * @return 
      */
-    public static Double getPoint(String symbol){
+    public static Double getPoint(String symbol) {
         
         /*
          * TODO => Agrregar que este patern se creé apartir de las monedas 
@@ -70,5 +85,21 @@ public class Inputs {
          } else {
              return 0.00001;
          }
+    }
+    
+    /**
+     * @return Objecto de opciones externas, para el advisor.
+     */
+    public Extern getExtern() {
+        return this.extern;
+    }
+    /**
+     * TODO - Hacer algo para tener muchos Extern.
+     * @param file
+     * @return 
+     */
+    public Inputs setExtern(String file){
+        this.extern = new Extern(file);
+        return this;
     }
 }

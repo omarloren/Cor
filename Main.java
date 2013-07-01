@@ -1,9 +1,9 @@
 
-import dao.Mongo;
+import io.Exceptions.ExternVariableNotFound;
+import io.Extern;
 import io.Inputs;
-import trade.indicator.IndicatorController;
-import trade.indicator.base.BollingerBands;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Clase para probar los objectos.
@@ -12,11 +12,12 @@ import trade.indicator.base.BollingerBands;
 public class Main{
     
     public void run(){
-        Inputs.build();
-        Mongo.build();
-        IndicatorController c = new IndicatorController();
-        c.newBollingerBand("EURUSD", 15, 10);
-        
+        try {
+            Extern extern = new Extern("./log.chr");
+            System.out.println(extern.getInteger("lala"));
+        } catch (ExternVariableNotFound ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public static void main(String[] args) {

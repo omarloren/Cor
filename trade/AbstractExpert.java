@@ -1,7 +1,7 @@
 package trade;
 
+import io.Extern;
 import java.util.ArrayList;
-import trade.indicator.IndicatorController;
 import trade.indicator.base.BollingerBands;
 
 /**
@@ -12,7 +12,8 @@ import trade.indicator.base.BollingerBands;
  * @author omar
  */
 public abstract class AbstractExpert {
-
+    
+    private Int
     Brokeable broker;
     String Symbol;
     Integer Period;
@@ -20,6 +21,7 @@ public abstract class AbstractExpert {
     Double Bid = null;
     Double openMin = null;
     Double Point = null; //Valor del Pip
+    public Extern extern;
 
     /**
      * Este es el "contructor" de la clase, favor de llamarlo a continuación de
