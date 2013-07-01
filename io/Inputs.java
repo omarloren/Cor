@@ -19,7 +19,7 @@ public class Inputs {
     private static Properties inputs;
     private static String[] currencies;
     private static Inputs self;
-    private Extern extern;
+    
     /**
      * Manejo de opciones en archivo de configuración.
      */
@@ -85,21 +85,5 @@ public class Inputs {
          } else {
              return 0.00001;
          }
-    }
-    
-    /**
-     * @return Objecto de opciones externas, para el advisor.
-     */
-    public Extern getExtern() {
-        return this.extern;
-    }
-    /**
-     * TODO - Hacer algo para tener muchos Extern.
-     * @param file
-     * @return 
-     */
-    public Inputs setExtern(String file){
-        this.extern = new Extern(file);
-        return this;
     }
 }

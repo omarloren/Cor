@@ -1,7 +1,11 @@
 package trade;
 
+import io.Exceptions.ExternVariableNotFound;
+import io.Extern;
 import io.Inputs;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import trade.indicator.base.BollingerBands;
 
 /**
@@ -21,7 +25,7 @@ public abstract class AbstractExpert {
     Double Bid = null;
     Double openMin = null;
     Double Point = null; //Valor del Pip
-    Inputs inputs;
+    Extern extern;
 
     /**
      * Este es el "contructor" de la clase, favor de llamarlo a continuación de
@@ -29,17 +33,21 @@ public abstract class AbstractExpert {
      *
      * @param broker
      */
-    public AbstractExpert builder(Brokeable broker, String symbol, Integer period) {
+    public AbstractExpert builder(Brokeable broker, String file) {
         this.broker = broker;
-        this.Symbol = symbol;
-        this.Period = period;
-        this.inputs = Inputs.getInstance();
+        this.extern = new Extern(file);
         this.Point = this.Symbol.equals("USDJPY") ? 0.001 : 0.0001;
+        try {
+            this.Symbol = this.extern.getString("Symbol");
+            this.Period = this.extern.getInteger("period");
+        } catch (ExternVariableNotFound ex) {
+            Logger.getLogger(AbstractExpert.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return this;
     }
 
-    public Inputs getInputs(){
-        return this.inputs;
+    public Extern getExtern(){
+        return this.extern;
     }
     /**
      * Añade precio de bid.
