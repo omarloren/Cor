@@ -38,6 +38,9 @@ public abstract class AbstractExpert {
         return this;
     }
 
+    public Inputs getInputs(){
+        return this.inputs;
+    }
     /**
      * Añade precio de bid.
      *
