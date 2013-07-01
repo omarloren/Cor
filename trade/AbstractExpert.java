@@ -13,7 +13,7 @@ import trade.indicator.base.BollingerBands;
  */
 public abstract class AbstractExpert {
     
-    private Int
+    
     Brokeable broker;
     String Symbol;
     Integer Period;
@@ -82,7 +82,7 @@ public abstract class AbstractExpert {
 
     /**
      * Acceso directo al numero de posiciones para un magic.
-     *
+     *s
      * @param ma
      * @return
      */
