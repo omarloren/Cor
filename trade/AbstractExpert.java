@@ -21,7 +21,7 @@ public abstract class AbstractExpert {
     Double Bid = null;
     Double openMin = null;
     Double Point = null; //Valor del Pip
-    public Inputs inputs;
+    Inputs inputs;
 
     /**
      * Este es el "contructor" de la clase, favor de llamarlo a continuación de
