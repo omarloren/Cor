@@ -19,13 +19,9 @@ public class Extern {
     /**
      * @param file Direccion del archivo .set
      */
-    public Extern(String file){
-        this.properties = new Properties();
-        try {
-            this.properties.load(new FileInputStream(file));
-        } catch (IOException ex) {
-            Logger.getLogger(Extern.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public Extern(Properties properties){
+        this.properties = properties;
+        
     }
     /**
      * Intenta obtener un Double del archivo de configuración .set.
