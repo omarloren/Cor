@@ -88,7 +88,7 @@ public abstract class AbstractExpert {
      *
      * @return
      */
-    ArrayList<Ordener> ordersTotal(Integer ma) {
+    public ArrayList<Ordener> ordersTotal(Integer ma) {
         return this.broker.getOrdersByMagic(this.Symbol, ma);
     }
 
@@ -98,7 +98,7 @@ public abstract class AbstractExpert {
      * @param ma
      * @return
      */
-    Integer ordersByMagic(Integer ma) {
+    public Integer ordersByMagic(Integer ma) {
         return this.broker.getOrdersByMagic(this.Symbol, ma).size();
     }
 
@@ -120,7 +120,7 @@ public abstract class AbstractExpert {
         return this.Period;
     }
 
-    public Brokeable getBrokeable() {
+    Brokeable getBrokeable() {
         return this.broker;
     }
     
