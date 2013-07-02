@@ -18,14 +18,14 @@ import trade.indicator.base.BollingerBands;
 public abstract class AbstractExpert {
     
     
-    Brokeable broker;
-    String Symbol;
-    Integer Period;
-    Double Ask = null;
-    Double Bid = null;
-    Double openMin = null;
-    Double Point = null; //Valor del Pip
-    Extern extern;
+    private Brokeable broker;
+    private String Symbol;
+    private Integer Period;
+    private Double Ask = null;
+    private Double Bid = null;
+    private Double openMin = null;
+    private Double Point = null; //Valor del Pip
+    private Extern extern;
 
     /**
      * Este es el "contructor" de la clase, favor de llamarlo a continuación de
@@ -116,8 +116,8 @@ public abstract class AbstractExpert {
     public int getPeriod() {
         return this.Period;
     }
-
-    Brokeable getBrokeable() {
+    
+    public Brokeable getBrokeable() {
         return this.broker;
     }
     
@@ -131,6 +131,10 @@ public abstract class AbstractExpert {
     
     public Double getOpenMin(){
         return this.openMin;
+    }
+    
+    public Double getPoint(){
+        return this.Point;
     }
     
     /**
