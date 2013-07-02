@@ -86,7 +86,7 @@ public abstract class AbstractExpert {
      * Obtiene el total de ordenes de para cierto magic pero del symbol actual,
      * normalmente lo usamos si queremos cerrar las ordenes.
      *
-     * @return
+     * @return ArrayList con las ordenes
      */
     public ArrayList<Ordener> ordersTotal(Integer ma) {
         return this.broker.getOrdersByMagic(this.Symbol, ma);
@@ -96,12 +96,16 @@ public abstract class AbstractExpert {
      * Acceso directo al numero de posiciones para un magic.
      *s
      * @param ma
-     * @return
+     * @return Numero de ordenes para este magic y este Symbol
      */
     public Integer ordersByMagic(Integer ma) {
         return this.broker.getOrdersByMagic(this.Symbol, ma).size();
     }
-
+    
+    public ArrayList<Ordener>  ordersBySymbol(){
+        return this.broker.getOrdersBySymbol(this.Symbol);
+    }
+    
     /**
      * Para saber si una grafica tiene los datos necesarios para operar.
      *
