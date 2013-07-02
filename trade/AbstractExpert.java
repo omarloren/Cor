@@ -2,8 +2,8 @@ package trade;
 
 import io.Exceptions.ExternVariableNotFound;
 import io.Extern;
-import io.Inputs;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import trade.indicator.base.BollingerBands;
@@ -33,7 +33,7 @@ public abstract class AbstractExpert {
      *
      * @param broker
      */
-    public AbstractExpert builder(Brokeable broker, String file) {
+    public AbstractExpert builder(Brokeable broker, Properties file) {
         this.broker = broker;
         this.extern = new Extern(file);
         this.Point = this.Symbol.equals("USDJPY") ? 0.001 : 0.0001;

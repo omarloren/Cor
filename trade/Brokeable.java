@@ -86,7 +86,7 @@ public abstract class Brokeable {
      */
     public ArrayList<Ordener> getOrdersByMagic(String symbol, Integer ma){
         ArrayList r= new ArrayList();
-        for (int i = 0; i < orders.size(); i++) {
+        for (int i = 0; i < orders.size(); i++) {orders
             Ordener o = this.orders.get(i); //temporal.
             if (o.getSymbol().equals(symbol) && o.getMagic() == ma) {
                 r.add(orders.get(i));
@@ -110,6 +110,16 @@ public abstract class Brokeable {
         }
         return r; 
     }
+    
+    ArrayList<Ordener> getOrders(){
+        return this.orders;
+    }
+    
+    public Brokeable setOrders(ArrayList<Ordener> orders){
+        this.orders = orders;
+        return this;
+    }
+    
     /**
      * @return Controlador de indicadores.
      */

@@ -3,11 +3,8 @@ package io;
 
 
 import io.Exceptions.ExternVariableNotFound;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Maneja variables de archivo .set, este es un archivo que Metatrader usa para
