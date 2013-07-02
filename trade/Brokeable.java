@@ -51,6 +51,14 @@ public abstract class Brokeable {
         }
     }
     
+    public void remove(String id){
+        for (int i = 0; i < this.orders.size(); i++) {
+            if (this.orders.get(i).getID().equals(id)){
+                this.orders.remove(i);
+            }
+        }
+    }
+    
     /**
      * Abre una orden.
      * @param orden
@@ -86,7 +94,7 @@ public abstract class Brokeable {
      */
     public ArrayList<Ordener> getOrdersByMagic(String symbol, Integer ma){
         ArrayList r= new ArrayList();
-        for (int i = 0; i < orders.size(); i++) {orders
+        for (int i = 0; i < orders.size(); i++) {
             Ordener o = this.orders.get(i); //temporal.
             if (o.getSymbol().equals(symbol) && o.getMagic() == ma) {
                 r.add(orders.get(i));
@@ -109,6 +117,20 @@ public abstract class Brokeable {
             }            
         }
         return r; 
+    }
+    /**
+     * Busca una orden dependiendo de su ID.
+     * @param id
+     * @return 
+     */
+    public Ordener getOrdernById(String id){
+        Ordener o = null;
+        for(int i=0; i < this.orders.size(); i++){
+            if (this.orders.get(i).getID().equals(id)) {
+                o = this.orders.get(i);
+            }
+        }
+        return o;
     }
     
     ArrayList<Ordener> getOrders(){
