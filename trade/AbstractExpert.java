@@ -91,17 +91,10 @@ public abstract class AbstractExpert {
     public ArrayList<Ordener> ordersTotal(Integer ma) {
         return this.broker.getOrdersByMagic(this.Symbol, ma);
     }
-
     /**
-     * Acceso directo al numero de posiciones para un magic.
-     *s
-     * @param ma
-     * @return Numero de ordenes para este magic y este Symbol
+     * Ordenes de la moneda
+     * @return 
      */
-    public Integer ordersByMagic(Integer ma) {
-        return this.broker.getOrdersByMagic(this.Symbol, ma).size();
-    }
-    
     public ArrayList<Ordener>  ordersBySymbol(){
         return this.broker.getOrdersBySymbol(this.Symbol);
     }
