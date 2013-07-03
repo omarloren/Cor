@@ -133,11 +133,11 @@ public abstract class Brokeable {
         return o;
     }
     
-    ArrayList<Ordener> getOrders(){
+    public ArrayList<Ordener> getOrders(){
         return this.orders;
     }
     
-    ArrayList<Ordener> getOrdersActives(){
+    public ArrayList<Ordener> getOrdersActives(){
         ArrayList r= new ArrayList();
         for (int i = 0; i < orders.size(); i++) {
             Ordener o = this.orders.get(i); //temporal.
