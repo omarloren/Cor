@@ -2,6 +2,8 @@ package trade;
 
 import io.Exceptions.ExternVariableNotFound;
 import io.Extern;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -37,6 +39,7 @@ public abstract class AbstractExpert {
         this.broker = broker;
         this.extern = new Extern(file);
         this.Point = this.Symbol.equals("USDJPY") ? 0.001 : 0.0001;
+        
         try {
             this.Symbol = this.extern.getString("Symbol");
             this.Period = this.extern.getInteger("period");
@@ -135,6 +138,17 @@ public abstract class AbstractExpert {
     
     public Double getPoint(){
         return this.Point;
+    }
+    /**
+     * Corta un valor a un formato valido de precio, es decir si algún cálculo 
+     * es 1.3265666455646 el cortará este valor a 1.32656
+     * @param p
+     * @return 
+     */
+    public Double priceCut(Double p){
+        int decimals = this.Symbol.equals("USDJPY") ? 3 : 5;
+        BigDecimal a = new BigDecimal(p);
+        return a.setScale(decimals, RoundingMode.HALF_UP).doubleValue();
     }
     
     /**

@@ -1,6 +1,8 @@
 
 package trade.indicator.base;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import trade.indicator.base.util.SimpleMovingAverage;
 import trade.indicator.base.util.StandardDeviation;
 
@@ -80,9 +82,9 @@ public class BollingerBands extends Indicator{
     }
 
            
-    private double redondear(Double val){
-        int temp= (int)(val * 100000000);
-        return temp*0.00000001;
+    private double redondear(Double v){
+        BigDecimal a = new BigDecimal(v);
+        return a.setScale(7, RoundingMode.HALF_UP).doubleValue();
     }
     
     @Override
