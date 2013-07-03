@@ -97,7 +97,7 @@ public abstract class Brokeable {
         for (int i = 0; i < orders.size(); i++) {
             Ordener o = this.orders.get(i); //temporal.
             if (o.getSymbol().equals(symbol) && o.getMagic() == ma) {
-                r.add(orders.get(i));
+                r.add(o);
             }            
         }
         return r; 
@@ -113,7 +113,7 @@ public abstract class Brokeable {
         for (int i = 0; i < orders.size(); i++) {
             Ordener o = this.orders.get(i); //temporal.
             if (o.getSymbol().equals(symbol)) {
-                r.add(orders.get(i));
+                r.add(o);
             }            
         }
         return r; 
@@ -135,6 +135,17 @@ public abstract class Brokeable {
     
     ArrayList<Ordener> getOrders(){
         return this.orders;
+    }
+    
+    ArrayList<Ordener> getOrdersActives(){
+        ArrayList r= new ArrayList();
+        for (int i = 0; i < orders.size(); i++) {
+            Ordener o = this.orders.get(i); //temporal.
+            if (o.isActive()) {
+                r.add(o);
+            }            
+        }
+        return r;
     }
     
     public Brokeable setOrders(ArrayList<Ordener> orders){
