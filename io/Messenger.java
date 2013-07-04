@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -82,14 +84,14 @@ public abstract class Messenger extends Thread{
         JSONObject json = new JSONObject();
         json.put("type", "handshake");
         json.put("name", this.id);
-        this.send(json);
+        this.nodeStream(json);
     }
     
     /**
      * Escribe mensajes a node un objecto json.
      * @param json 
      */
-    public void send(JSONObject json) {
+    public void nodeStream(JSONObject json) {
         try {
             //Escribmos a el stream los bytes de la cadena.
             this.outNode.write(json.toJSONString().getBytes()); 
@@ -97,7 +99,19 @@ public abstract class Messenger extends Thread{
             System.out.println(ex);
         }
     }
-
+    /**
+     * Escribe mensajes a node apartir de un string, este debe de estar bien
+     * formateado si no lanzará una excepcion al parsearlo.
+     * @param s 
+     */
+    public void nodeStream(String s){
+        try {
+            JSONObject o = (JSONObject)new JSONParser().parse(s);
+            this.nodeStream(o);
+        } catch (ParseException ex) {
+            System.err.println(ex);
+        }
+    }
     /**
      * Debe de ser implementado con un switch.
      * ----switch ((String) json.get("type")) {...}
