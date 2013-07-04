@@ -20,7 +20,7 @@ public abstract class Messenger extends Thread{
     private Socket socket;
     private DataOutputStream outNode;
     private String id;
-    private static String host = "";
+    private static String host;
     private static int port = -1;
     
     public static void build(String h, int p){
@@ -38,9 +38,10 @@ public abstract class Messenger extends Thread{
     }
     
     @Override
-    public void run(){
+    public void run() {
         JSONObject root;
         JSONObject json; 
+        
         try {
             this.socket = new Socket(this.host, this.port);
             this.outNode = new DataOutputStream(socket.getOutputStream());
