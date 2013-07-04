@@ -20,11 +20,12 @@ public abstract class Messenger extends Thread{
     private Socket socket;
     private DataOutputStream outNode;
     private String id;
-    private String host = "";
-    private int port = -1;
-    public Messenger(String host, int port){
-        this.host = host;
-        this.port = port;
+    private static String host = "";
+    private static int port = -1;
+    
+    public static void build(String h, int p){
+        host = h;
+        port = p;
     }
     /**
      * Añade ID de la aplicación.
