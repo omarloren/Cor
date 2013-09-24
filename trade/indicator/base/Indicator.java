@@ -1,6 +1,7 @@
 package trade.indicator.base;
 
 import dao.Mongo;
+import io.Inputs;
 import java.util.ArrayList;
 
 /**
@@ -30,6 +31,9 @@ public abstract class Indicator {
      */
     private String symbol;
     private Mongo mongo;
+    private static Integer from;
+    Inputs input;
+    Double lastValue;
 
     /**
      * Al construir hace un query para obtener los datos iniciales del indicador
@@ -38,15 +42,19 @@ public abstract class Indicator {
      */
     public Indicator(String s,int p, int n) {
         
-        this.mongo = new Mongo().setDB("history").setCollection(s);
+        this.mongo = new Mongo().setDB("data").setCollection(s).setFrom(from);
+        this.input = Inputs.getInstance();
         this.periodo = p;
         this.n = n;
         this.symbol = s;
         this.mongo.setCollection(this.symbol);
         ArrayList<Object[]> temp = this.mongo.getCoinBuffer(this.symbol, p, n);
         int lastMin = (int)temp.get(0)[0];
-        
         Double lastOpen = (Double)temp.get(0)[1];
+        this.values.add(lastOpen);
+        if(this.n == 1){
+            return;
+        }
         for (int i = 0; i < temp.size(); i++) { 
             int min = (int)temp.get(i)[0];
             int dif = 0;
@@ -64,14 +72,12 @@ public abstract class Indicator {
             //Si min es modulo de p, entonces.          
             if (isMod(p, min)) {
                 this.values.add(open);
-                //System.out.println("Add 3 "+min + " "+open);
             } else if (dif < 0) {
                 //Si hay cambio de hora y hay gap en este cambio.
                 if (dif + lastMin >= 0) {
                     for (int j = lastMin; j > dif; j--) {
                         if (this.isMod(p, j)) {
                             this.values.add(lastOpen);
-                            //System.out.println("Add 2 "+lastMin + " "+lastOpen);
                         }
                     }
                 }
@@ -79,7 +85,6 @@ public abstract class Indicator {
                 for (int j = 0; j < dif; j++) {
                     if (this.isMod(p, (j-lastMin))) {
                         this.values.add(lastOpen);
-                        //System.out.println("Add 1 "+lastMin + " "+ lastOpen);
                     }
                 }
             }
@@ -87,7 +92,7 @@ public abstract class Indicator {
             lastOpen = open;
             //Si Ya tenemos los datos necesarios.
             if( this.values.size() == n) {
-                break;
+                return;
             }
         }
     }
@@ -112,9 +117,12 @@ public abstract class Indicator {
      * @param val new value.
      */
     public void refreshValues(Double val) {
+        this.lastValue = val;
         this.values.remove(values.size()-1);
         this.values.add(0, val);
+        this.rollOn();
     }
+    
     
     /**
      * @param n the n to set.
@@ -122,7 +130,10 @@ public abstract class Indicator {
     public void setN(int n) {
         this.n = n;
     }
-
+    
+    public static void setFrom(Integer f){
+        from = f;
+    }
     /**
      * @return Tamaño del indicador.
      */
@@ -147,7 +158,7 @@ public abstract class Indicator {
      * llamar al método refreshValues si quiere que actualizar los values.
      * @param val 
      */
-    abstract public void rollOn(Double val);
+    abstract public void rollOn();
     
     @Override
     abstract public boolean equals(Object o);

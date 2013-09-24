@@ -1,14 +1,12 @@
 package trade;
 
-import io.Exceptions.ExternVariableNotFound;
-import io.Extern;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import trade.indicator.IndicatorController;
 import trade.indicator.base.BollingerBands;
+import trade.indicator.base.Indicator;
 
 /**
  * Clase base para un expert, es la API para que un expert controle la apertura
@@ -21,37 +19,30 @@ public abstract class AbstractExpert {
     
     
     private Brokeable broker;
-    private String Symbol;
-    private Integer Period;
+    private String symbol;
+    private Integer periodo;
     private Double Ask = null;
     private Double Bid = null;
     private Double openMin = null;
-    private Double Point = null; //Valor del Pip
-    private Extern extern;
+    private Double point;
+    private Integer magic;
+    
 
     /**
      * Este es el "contructor" de la clase, favor de llamarlo a continuación de
-     * crear este objecto, ¡GRACIAS!.
+     * crear este objecto. (NO DEBERÍA PROGRAMAR COMO EN PHP)
      *
      * @param broker
      */
-    public AbstractExpert builder(Brokeable broker, Properties file) {
+    public AbstractExpert __construct(Brokeable broker, Integer from, String symbol, Double point, Integer magic) {
+        Indicator.setFrom(from);
         this.broker = broker;
-        this.extern = new Extern(file);
-        this.Point = this.Symbol.equals("USDJPY") ? 0.001 : 0.0001;
-        
-        try {
-            this.Symbol = this.extern.getString("Symbol");
-            this.Period = this.extern.getInteger("period");
-        } catch (ExternVariableNotFound ex) {
-            Logger.getLogger(AbstractExpert.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.symbol = symbol;
+        this.point = point;
+        this.magic = magic;
         return this;
     }
-
-    public Extern getExtern(){
-        return this.extern;
-    }
+    
     /**
      * Añade precio de bid.
      *
@@ -92,14 +83,23 @@ public abstract class AbstractExpert {
      * @return ArrayList con las ordenes
      */
     public ArrayList<Ordener> ordersTotal(Integer ma) {
-        return this.broker.getOrdersByMagic(this.Symbol, ma);
+        return this.broker.getOrdersByMagic(this.symbol, ma);
     }
     /**
      * Ordenes de la moneda
      * @return 
      */
-    public ArrayList<Ordener>  ordersBySymbol(){
-        return this.broker.getOrdersBySymbol(this.Symbol);
+    public ArrayList<Ordener>  getOrdersBySymbol() {
+        return this.broker.getOrdersBySymbol(this.symbol);
+    }
+    
+    public Integer ordersBySymbol() {
+        Integer i = this.broker.getOrdersBySymbol(this.symbol).size();
+        return i;
+    }
+    
+    public void setPeriodo(Integer periodo) {
+         this.periodo = periodo;
     }
     
     /**
@@ -109,46 +109,55 @@ public abstract class AbstractExpert {
      */
     public Boolean isReady() {
         return (this.Ask != null && this.Bid != null && this.openMin != null
-                && this.Period != null && this.Symbol != null && this.broker != null);
+                && this.periodo != null && this.symbol != null && this.broker != null);
     }
 
     public String getSymbol() {
-        return this.Symbol;
+        return this.symbol;
     }
 
     public int getPeriod() {
-        return this.Period;
+        return this.periodo;
     }
     
     public Brokeable getBrokeable() {
         return this.broker;
     }
     
-    public Double getAsk(){
+    public Double getAsk() {
         return this.Ask;
     }
     
-    public Double getBid(){
+    public Double getBid() {
         return this.Bid;
     }
     
-    public Double getOpenMin(){
+    public Double getOpenMin() {
         return this.openMin;
     }
     
-    public Double getPoint(){
-        return this.Point;
+    public Double getPoint() {
+        return this.point;
+    }
+    
+    public Integer getMagic() {
+        return this.magic;
     }
     /**
      * Corta un valor a un formato valido de precio, es decir si algún cálculo 
-     * es 1.3265666455646 el cortará este valor a 1.32656
+     * es 1.3265666455646 el cortará este valor a 1.32656.
      * @param p
      * @return 
      */
-    public Double priceCut(Double p){
-        int decimals = this.Symbol.equals("USDJPY") ? 3 : 5;
-        BigDecimal a = new BigDecimal(p);
-        return a.setScale(decimals, RoundingMode.HALF_UP).doubleValue();
+    public Double priceCut(Double p) {
+       
+        MathContext mc = new MathContext(7, RoundingMode.HALF_UP);
+        BigDecimal a = new BigDecimal(p,mc);
+        return a.doubleValue();
+    }
+    
+    public double redondear(Double d) {
+        return Arithmetic.redondear(d);
     }
     
     /**
@@ -158,7 +167,8 @@ public abstract class AbstractExpert {
      * @return
      */
     public BollingerBands iBand(int n) {
-        return this.broker.getIndicatorController().newBollingerBand(this.Symbol, this.Period, n);
+        IndicatorController ic = this.broker.getIndicatorController();
+        return ic.newBollingerBand(this.symbol, this.periodo, n);
     }
 
     /**
@@ -172,7 +182,7 @@ public abstract class AbstractExpert {
      * @param sl
      * @param tp
      */
-    public abstract void orderSend(Double price, Double lotes, Integer magic, Character side, Double sl, Double tp);
+    //public abstract void orderSend(Double price, Double lotes, Integer magic, Character side, Double sl, Double tp);
 
     /*
      * Helpersitos para el tiempo.
@@ -188,4 +198,6 @@ public abstract class AbstractExpert {
     public abstract int getMonth();
 
     public abstract int getYear();
+    
+    public abstract Boolean isNewCandle();
 }

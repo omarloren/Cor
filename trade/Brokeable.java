@@ -17,20 +17,29 @@ public abstract class Brokeable {
      */
     private ArrayList<Ordener> orders = new ArrayList();
     static IndicatorController indicatorController;
+    private static Integer contOps = 0; 
     public Brokeable(){
         indicatorController = new IndicatorController();
     }    
+    
+    
     /**
      * Revisa qué compras excedieron sus limites.
      * @param ask 
      */
-    public void asker(Double ask){
+    public void asker(Double ask) {
         for (int i = 0; i < this.orders.size(); i++) {
-            if (this.orders.get(i).getSide() == '1') {
-                if (ask <= this.orders.get(i).getSl() || ask >= this.orders.get(i).getTp()) {
-                    this.orders.get(i).setClosePrice(ask).setReason("TP ó SL");
-
-                }
+            Ordener o = this.orders.get(i);
+            if (o.getSide() == '1') {
+               if (ask <= o.getSl()) {
+                   o.setClosePrice(o.getSl()).setReason("StopLoss");
+                   this.closeOrder(o);
+                   this.refreshDrowDown(o);
+               } else if(ask >= o.getTp()){
+                   o.setClosePrice(o.getTp()).setReason("TakeProfit");
+                   this.closeOrder(o);
+                   this.refreshDrowDown(o);
+               }
             }
         }
     }
@@ -39,13 +48,18 @@ public abstract class Brokeable {
      * Revisa qué ventas excedieron sus limites.
      * @param bid 
      */
-    public void bider(Double bid){
-        for (int i = 0; i <this.orders.size(); i++) {
+    public void bider(Double bid) {
+        for (int i = 0; i < this.orders.size(); i++) {
             Ordener o = this.orders.get(i);
-            if (o.getSide() == '2'){
-               if (bid >= o.getSl() || bid <= o.getTp()) {
-                   o.setClosePrice(bid).setReason("TP ó SL");
-                   this.orderClosedCallback(o);
+            if (o.getSide() == '2') {
+               if (bid >= o.getSl() ) {
+                   o.setClosePrice(o.getSl()).setReason("TakeProfit");
+                   this.closeOrder(o);
+                   this.refreshDrowDown(o);
+               }else if(bid <= o.getTp()){
+                   o.setClosePrice(o.getTp()).setReason("StopLoss");
+                   this.closeOrder(o);
+                   this.refreshDrowDown(o);
                }
             }
         }
@@ -53,7 +67,7 @@ public abstract class Brokeable {
     
     public void remove(String id){
         for (int i = 0; i < this.orders.size(); i++) {
-            if (this.orders.get(i).getID().equals(id)){
+            if (this.orders.get(i).getID().equals(id)) {
                 this.orders.remove(i);
             }
         }
@@ -63,26 +77,20 @@ public abstract class Brokeable {
      * Abre una orden.
      * @param orden
      */
-    public void sendOrder(Ordener orden){
-         this.orders.add(orden);
+    public void sendOrder(Ordener orden) {
+         orden.setId(++contOps);
+         this.orders.add(orden);         
          //Se podría validar la orden de alguna forma.
-         this.ordenOpenedCallback(orden);
+         this.ordenOpenCallback(orden);
     }
     
     /**
      * Cierra una orden, por su id.
      * @param price 
      */
-    public void closeOrder(String id, Double price){
-        for (int i = 0; i < this.orders.size(); i++) {
-            Ordener o = this.orders.get(i);
-            if (o.getID().equals(id)) {
-                o.setClosePrice(price);
-                //TODO guardar registro en DB.
-                this.orders.remove(i).setReason("closed by User");
-                this.orderClosedCallback(o);
-            }
-        }
+    public void closeOrder(Ordener in) {
+        this.remove(in.getID());
+        this.orderCloseCallback(in);
     }
     
     /**
@@ -96,7 +104,7 @@ public abstract class Brokeable {
         ArrayList r= new ArrayList();
         for (int i = 0; i < orders.size(); i++) {
             Ordener o = this.orders.get(i); //temporal.
-            if (o.getSymbol().equals(symbol) && o.getMagic() == ma) {
+            if (o.getSymbol().equals(symbol) && o.getMagic() == ma && o.isActive()) {
                 r.add(o);
             }            
         }
@@ -112,7 +120,7 @@ public abstract class Brokeable {
         ArrayList r= new ArrayList();
         for (int i = 0; i < orders.size(); i++) {
             Ordener o = this.orders.get(i); //temporal.
-            if (o.getSymbol().equals(symbol)) {
+            if (o.getSymbol().equals(symbol) && o.isActive()) {
                 r.add(o);
             }            
         }
@@ -123,9 +131,9 @@ public abstract class Brokeable {
      * @param id
      * @return 
      */
-    public Ordener getOrdernById(String id){
+    public Ordener getOrdernById(String id) {
         Ordener o = null;
-        for(int i=0; i < this.orders.size(); i++){
+        for(int i=0; i < this.orders.size(); i++) {
             if (this.orders.get(i).getID().equals(id)) {
                 o = this.orders.get(i);
             }
@@ -133,11 +141,11 @@ public abstract class Brokeable {
         return o;
     }
     
-    public ArrayList<Ordener> getOrders(){
+    public ArrayList<Ordener> getOrders() {
         return this.orders;
     }
     
-    public ArrayList<Ordener> getOrdersActives(){
+    public ArrayList<Ordener> getOrdersActives() {
         ArrayList r= new ArrayList();
         for (int i = 0; i < orders.size(); i++) {
             Ordener o = this.orders.get(i); //temporal.
@@ -168,10 +176,16 @@ public abstract class Brokeable {
     /**
      * Cuando una orden sea abierta exitosamente.
      */
-    public abstract void ordenOpenedCallback(Ordener orden); 
+    public abstract void ordenOpenCallback(Ordener o); 
     
     /**
      * Cuando una orden es cerrada, ya sea por el usuario o SL/TP.
      */
-    public abstract void orderClosedCallback(Ordener orden);
+    public abstract void orderCloseCallback(Ordener o);
+    
+    /**
+     * Refrescamos las perdidas o ganacias flotantes asi como el drow - down.
+     * @param orden 
+     */
+    public abstract void refreshDrowDown(Ordener orden);
 }

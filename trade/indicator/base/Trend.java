@@ -1,7 +1,6 @@
 
 package trade.indicator.base;
 
-import io.Inputs;
 
 /**
  * "Indicador" que busca que cierto numeros de variables x se encuentren en un 
@@ -15,7 +14,6 @@ public class Trend extends Indicator{
     private int y1 = 0; //Primer  intervalo y
     private int y2 = 0; //Segundo intervalo y
     private int c = 0; //Coincidencias    
-    private Double last_val = 0.0;
     private Double point;
     public Trend(String s, int p, int x1, int x2, int y1, int y2, int c){
         super(s, p, x1);
@@ -24,7 +22,7 @@ public class Trend extends Indicator{
         this.y1 = y1;
         this.y2 = y2;
         this.c = c;
-        this.point = Inputs.getPoint(this.getSymbol());
+        this.point = this.input.getPoint(this.getSymbol());
     }
     /**
      * Buscamos una tendencia alcista, devolviendo el número de coincidencias
@@ -36,8 +34,8 @@ public class Trend extends Indicator{
         int cont = 0;
         for (int i = 0; i < (this.x1 - this.x2); i++) {
             double current = this.values.get(this.x1 + i);
-            if (current < (this.last_val + this.y1 * this.point) && 
-                    this.values.get(i) > (this.last_val + this.y2 * this.point)){
+            if (current < (this.lastValue + this.y1 * this.point) && 
+                    this.values.get(i) > (this.lastValue + this.y2 * this.point)){
                 cont++;
             }
         }
@@ -58,8 +56,8 @@ public class Trend extends Indicator{
         int cont = 0;
         for (int i = 0; i < (this.x1 - this.x2); i++) {
             double current = this.values.get(this.x1 + i);
-            if (this.values.get(i) > (this.last_val + this.y2 * this.point) && 
-                    this.values.get(i) < (this.last_val + this.y1 * this.point)){
+            if (this.values.get(i) > (this.lastValue + this.y2 * this.point) && 
+                    this.values.get(i) < (this.lastValue + this.y1 * this.point)){
                 cont++;
             }
         }
@@ -71,9 +69,8 @@ public class Trend extends Indicator{
     }
     
     @Override
-    public void rollOn(Double val) {
-        this.refreshValues(val);
-        this.last_val = val;
+    public void rollOn() {
+        //
     }
 
     @Override

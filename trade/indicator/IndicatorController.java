@@ -17,7 +17,7 @@ public class IndicatorController {
      */
     private static ArrayList<Indicator> indicatorsPool = new ArrayList();
     public IndicatorController(){
-        //
+        
     }
     
     /**
@@ -34,7 +34,7 @@ public class IndicatorController {
         }
     }
     /**
-     * Crea un nuevo BollingerBand, primero buscamos en la base de los 
+     * Crea un nuevo BollingerBand, primero busca en la base de los 
      * indicadores si existe ya existe un indicador que sea del mismo tipo y de 
      * los mismos periodos que el deseado. Si existe devuelve la referencia del
      * indicador, si no existe le crea.
@@ -42,8 +42,9 @@ public class IndicatorController {
      * @return Objecto del Bollinger.
      */
     public BollingerBands newBollingerBand(String s, int p, int n){
+        
         BollingerBands b = null;
-        for (Indicator i : indicatorsPool){
+        for (Indicator i : indicatorsPool) {
             if (i.equals(b)) {
                 b = (BollingerBands) i;
                 break;
@@ -51,6 +52,7 @@ public class IndicatorController {
         }
         if (b == null) {
             b  = new BollingerBands(s, p, n);
+            indicatorsPool.add(b);
         }
         return b;
     }

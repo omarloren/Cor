@@ -82,6 +82,7 @@ public abstract class Ordener {
      * @return 
      */
     public Ordener setReason(String reason){
+        this.reason = reason;
         return this;
     }
     /**
@@ -126,7 +127,10 @@ public abstract class Ordener {
         this.magicma = magicma;
         return this;
     }
-    
+    public Ordener setId(Integer id){
+        this.id = id.toString();
+        return this;
+    }
     /**
      * Si la Orden esta vigente o no.
      * @return 
@@ -172,7 +176,7 @@ public abstract class Ordener {
     }
     
     public String getID(){
-        return this.getID();
+        return this.id;
     }
     
     public Character getSide(){

@@ -2,6 +2,7 @@
 package trade.indicator.base.util;
 
 import java.util.ArrayList;
+import trade.Arithmetic;
 
 public class StandardDeviation {
     /**
@@ -50,21 +51,17 @@ public class StandardDeviation {
         if (size < (N + offset)) {
             return stdDev;
         }
-        int cnt = 0;
         for (int i = size - (N + offset); i < (size - offset); i++) {
-            stdDev += Math.pow((values.get(i) - mean), 2);
-            cnt++;
+            stdDev += Math.pow((values.get(i) - this.mean), 2);
         }
         stdDev = Math.sqrt(stdDev / N);
-        return stdDev;
+        return Arithmetic.redondear(stdDev, 6);
     }
 
     /**
      * Method used to calculate the mean of the last N given set of values. Used
      * to calculate the mean in the
-     *
      * @see calculateStdDev()
-	 *
      */
     private double calculateMean() {
         double mean = 0;

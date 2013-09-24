@@ -2,6 +2,7 @@
 package trade.indicator.base.util;
 
 import java.util.ArrayList;
+import trade.Arithmetic;
 
 /**
  * Utility class to calculate simple moving average given a set of values and a
@@ -62,19 +63,16 @@ public class SimpleMovingAverage {
      * of values
      */
     public double getSMA() {
-        double mean = 0;
+        double m = 0;
         int size = values.size();
         if (values != null && size >= getN()) {
-            int cnt = 0;
-            for (int i = size - getN(); i < size; i++) {
-                mean += values.get(i);
-                cnt++;
+            for (int i = 0; i < this.values.size(); i++) {
+                m += this.values.get(i);
             }
-            assert (cnt == getN());
-            mean = mean / getN();
-            setMean(mean);
+            m =  m / this.values.size();
+            setMean(m);
         }
-        return mean;
+        return m;
     }
 
     /**

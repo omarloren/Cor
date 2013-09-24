@@ -6,6 +6,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 import io.Inputs;
 import java.util.ArrayList;
 import java.util.Map;
@@ -16,10 +17,11 @@ import java.util.Map;
  */
 public class Mongo {
     //Conexión con Mongo
-    private static com.mongodb.Mongo mongoConn ;
+    private static com.mongodb.MongoClient mongoConn ;
     //Al inicio es la DB por default.
-    private static DB db ;
+    private DB db ;
     private DBCollection coll;
+    private Integer from;
     /**
      * Buffer de precios para las monedas, tradicionalmente usado por indicadores,
      * tiene un ArrayList<Object[]> por que tenemos que alamacenar el minuto y 
@@ -30,19 +32,20 @@ public class Mongo {
      * Inicializa la conexión con mongo, y la db. Debe de ser llamado antes de 
      * usar cualquier método de esta clase.
      */
-    public static void build(){
+    public Mongo() {
         mongoConn = Connections.getMongoConnection();
-        db = mongoConn.getDB("local");
-        currencies = Inputs.getCurrencies();
+        Inputs inputs = Inputs.getInstance();
+        currencies = inputs.getCurrencies();
     }
     /**
      * Inserta en cierta collección.
      * @param coll
      * @param o 
      */
-    public void insert(String coll, DBObject o){
+    public void insert(String coll, String str){
+        //System.out.println(coll + " " +str);
         this.setCollection(coll);
-        this.coll.insert(o);
+        this.coll.insert((DBObject)JSON.parse(str));
     }
     
     /**
@@ -69,7 +72,7 @@ public class Mongo {
      * @return Objecto de la DB.
      */
     public DB getDB(){
-        return db;
+        return this.db;
     }
     
     /**
@@ -79,6 +82,10 @@ public class Mongo {
         return this.coll;
     }
     
+    public Mongo setFrom(Integer from){
+        this.from = from;
+        return this;
+    }
     /**
      * Retorna el N de valores(Aperturas de minuto) obtenidos de la BD, además
      * guarda un buffer de datos, si hacemos un query de 100 datos estos se 
@@ -88,6 +95,7 @@ public class Mongo {
      * @return 
      */
     public ArrayList getCoinBuffer(String s, int p, int n){
+        
         //Buffer del s.
         ArrayList<Object[]> base = currencies.get(s);
         
@@ -116,12 +124,14 @@ public class Mongo {
          */ 
         if (t.size() < cant) {    
             //Query
-            cursor = this.coll.find().sort(new BasicDBObject("$natural", -1)).limit((cant-base.size()));
+            BasicDBObject query = new BasicDBObject("DTYYYYMMDD", 
+                 new BasicDBObject("$lt", from));
+            cursor = this.coll.find(query).sort(new BasicDBObject("$natural", -1)).limit((cant-base.size()));
             while (cursor.hasNext()) {
                 DBObject curTemp = cursor.next();
                 Object d[] = new Object[2];
-                d[0] = this.getMinutos((Integer)curTemp.get("hour"));
-                d[1] = curTemp.get("Open");
+                d[0] = Integer.parseInt(this.getMinutos(String.valueOf(curTemp.get("TIME"))));
+                d[1] = curTemp.get("OPEN");
                 t.add(d);
                 //Alimentamos nuestro buffer con nuevos datos.
                 currencies.get(s).add(d);             
@@ -130,14 +140,33 @@ public class Mongo {
         return t;
     }
     /**
+     * Regresa Un cursor dentro de un rango de tiempo.
+     * @param from
+     * @param to
+     * @return 
+     */
+    public DBCursor getRange(Integer from, Integer to) {
+        this.from = from;
+        BasicDBObject query = new BasicDBObject("DTYYYYMMDD", 
+                 new BasicDBObject("$gte", from).append("$lt", to));
+        
+        return this.coll.find(query);
+    }
+    /**
      * Extrae los minutos y los convierte en enteros.
      * @param i
      * @return 
      */
-    private Integer getMinutos(Integer i){
+    private String getMinutos(String m){
+        String s = "";
         
-        String s = i.toString().substring(2, 4);
-        return  (new Integer(s));
+        if(m.length() < 6){
+            for (int i = m.length(); i < 6; i++) {
+                s+="0";
+            }
+        }
+        String r = s+m;
+        return  (r.substring(2, 4));
     }
     
     @Override

@@ -1,6 +1,7 @@
 
 package io;
 
+import io.Exceptions.SettingNotFound;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class Inputs {
      */
     private Inputs() { /* EMPTYNESS */ }
     
-    /**
+    /** 
      * Objectos que quieran saber algún input, deberán obtener esta instancia.
      * @return 
      */
@@ -51,7 +52,7 @@ public class Inputs {
      * de HashMap de String y Double[].
      * @return 
      */
-    public static Map<String,ArrayList<Object[]>> getCurrencies() {
+    public Map<String,ArrayList<Object[]>> getCurrencies() {
         Map<String,ArrayList<Object[]>> r = new HashMap();
         //Para poder devolver un ArrayList de Object.
         ArrayList<Object[]> a = new ArrayList();
@@ -68,7 +69,7 @@ public class Inputs {
      * @param symbol
      * @return 
      */
-    public static Double getPoint(String symbol) {
+    public Double getPoint(String symbol) {
         
         /*
          * TODO => Agrregar que este patern se creé apartir de las monedas 
@@ -85,5 +86,19 @@ public class Inputs {
          } else {
              return 0.00001;
          }
+    }
+    /**
+     * Devuelve el string de una opción en el archivo de configuración.
+     * @param input
+     * @return
+     * @throws SettingNotFound 
+     */
+    public String getInput(String input) throws SettingNotFound{
+        String r;
+        r = inputs.getProperty(input);
+        if(r == null){
+            throw new SettingNotFound(input);
+        }
+        return r;
     }
 }
