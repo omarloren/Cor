@@ -3,7 +3,13 @@ package trade;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import trade.indicator.IndicatorController;
 import trade.indicator.base.BollingerBands;
 import trade.indicator.base.Indicator;
@@ -101,7 +107,6 @@ public abstract class AbstractExpert {
     public void setPeriodo(Integer periodo) {
          this.periodo = periodo;
     }
-    
     /**
      * Para saber si una grafica tiene los datos necesarios para operar.
      *

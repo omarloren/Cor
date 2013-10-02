@@ -16,6 +16,7 @@ public abstract class Brokeable {
      * Todas las ordenes abiertas.
      */
     private ArrayList<Ordener> orders = new ArrayList();
+    private Double spread;
     static IndicatorController indicatorController;
     private static Integer contOps = 0; 
     public Brokeable(){
@@ -48,16 +49,27 @@ public abstract class Brokeable {
      * Revisa qué ventas excedieron sus limites.
      * @param bid 
      */
-    public void bider(Double bid) {
+    public void ticker(Double bid) {
+        Double ask = Arithmetic.sumar(bid, this.spread);
         for (int i = 0; i < this.orders.size(); i++) {
             Ordener o = this.orders.get(i);
             if (o.getSide() == '2') {
-               if (bid >= o.getSl() ) {
-                   o.setClosePrice(o.getSl()).setReason("TakeProfit");
+               if (ask >= o.getSl() ) {
+                   o.setClosePrice(o.getSl()).setReason("StopLoss");
                    this.closeOrder(o);
                    this.refreshDrowDown(o);
-               }else if(bid <= o.getTp()){
-                   o.setClosePrice(o.getTp()).setReason("StopLoss");
+               }else if(ask <= o.getTp()){
+                   o.setClosePrice(o.getTp()).setReason("TakeProfit");
+                   this.closeOrder(o);
+                   this.refreshDrowDown(o);
+               }
+            } else if(o.getSide() == '1'){
+                if (bid <= o.getSl()) {
+                   o.setClosePrice(o.getSl()).setReason("StopLoss");
+                   this.closeOrder(o);
+                   this.refreshDrowDown(o);
+               } else if(bid >= o.getTp()){
+                   o.setClosePrice(o.getTp()).setReason("TakeProfit");
                    this.closeOrder(o);
                    this.refreshDrowDown(o);
                }
@@ -154,6 +166,10 @@ public abstract class Brokeable {
             }            
         }
         return r;
+    }
+    
+    public void setSpread(Double spread){
+        this.spread = spread;
     }
     
     public Brokeable setOrders(ArrayList<Ordener> orders){

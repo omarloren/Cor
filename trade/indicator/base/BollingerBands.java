@@ -47,7 +47,7 @@ public class BollingerBands extends Indicator{
         this.simpleMovingAverage = new SimpleMovingAverage(getN(), this.values);
         this.standardDeviation = new StandardDeviation(getN(), this.values);
         // Calculates simple moving average (SMA)
-        this.middleBand = Arithmetic.redondear(this.simpleMovingAverage.getSMA() , 4);
+        this.middleBand = Arithmetic.redondear(this.simpleMovingAverage.getSMA() , 5);
         // Calculates the upper band by getting the previously calculated SMA
         this.upperBand = this.middleBand + (this.standardDeviation.calculateStdDev() * 2);
         // Calculates the lower band by getting the previously calculated SMA
@@ -59,7 +59,7 @@ public class BollingerBands extends Indicator{
      * @return upperBand Banda de arriba.
      */
     public Double getUpperBand() {
-        return Arithmetic.redondear(this.upperBand);
+        return Arithmetic.redondear(this.upperBand, 7);
     }
 
     /**
@@ -67,7 +67,7 @@ public class BollingerBands extends Indicator{
      * @return middleBand regresa el SMA
      */
     public Double getMiddleBand() {
-        return Arithmetic.redondear(this.middleBand);
+        return Arithmetic.redondear(this.middleBand, 7);
 
     }
 
@@ -76,7 +76,7 @@ public class BollingerBands extends Indicator{
      * @return lowerBand regresa la banda de abajo.
      */
     public Double getLowerBand() {
-        return Arithmetic.redondear(this.lowerBand);
+        return Arithmetic.redondear(this.lowerBand, 7);
     }
     
     @Override
