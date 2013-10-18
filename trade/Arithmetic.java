@@ -126,7 +126,10 @@ public class Arithmetic {
         BigDecimal a = new BigDecimal(v);
         return a.setScale(i, RoundingMode.HALF_UP).doubleValue();
     }
-    
+    /*public static double redondearUp6(double v){
+        BigDecimal a = new BigDecimal(v);
+        //return a.setScale(i, RoundingMode.).doubleValue();
+    }*/
     public static double redondearDn(Double v, int i){
         BigDecimal a = new BigDecimal(v);
         return a.setScale(i, RoundingMode.HALF_DOWN).doubleValue();

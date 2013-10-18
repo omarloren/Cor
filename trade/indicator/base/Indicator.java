@@ -51,8 +51,9 @@ public abstract class Indicator {
         ArrayList<Object[]> temp = this.mongo.getCoinBuffer(this.symbol, p, n);
         int lastMin = (int)temp.get(0)[0];
         Double lastOpen = (Double)temp.get(0)[1];
-        this.values.add(lastOpen);
+        //this.values.add(lastOpen);
         if(this.n == 1){
+            this.values.add(lastOpen);
             return;
         }
         for (int i = 0; i < temp.size(); i++) { 

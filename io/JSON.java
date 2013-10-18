@@ -2,7 +2,6 @@
 package io;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import org.json.simple.JSONObject;
 
@@ -13,9 +12,7 @@ import org.json.simple.JSONObject;
 public class JSON {
     public static String HashToJson( HashMap<String, Object> hm){
         JSONObject r = new JSONObject();
-        Iterator i = hm.entrySet().iterator();
-        while(i.hasNext()) {
-            Map.Entry e = (Map.Entry)i.next();
+        for (Map.Entry e : hm.entrySet()) {
             r.put(e.getKey(), e.getValue());
         }
         return r.toJSONString();

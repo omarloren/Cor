@@ -28,9 +28,9 @@ public class IndicatorController {
     public void setOpenMinute(Double o){
         //TODO - Hacer que verifique si el precio corresponde a algun indicador.
         for (Indicator i : indicatorsPool ) {
-            if (i.getPeriodo() == 5) {
-                i.refreshValues(o);
-            }
+            
+            i.refreshValues(o);
+            
         }
     }
     /**

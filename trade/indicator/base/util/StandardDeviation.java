@@ -9,7 +9,7 @@ public class StandardDeviation {
      * values field holds the values to be used to determine the standard
      * deviation
      */
-    private ArrayList<Double> values = new ArrayList<Double>();
+    public ArrayList<Double> values = new ArrayList<Double>();
     /**
      * N field is the number of values to consider to calculate the standard
      * deviation
@@ -54,8 +54,8 @@ public class StandardDeviation {
         for (int i = size - (N + offset); i < (size - offset); i++) {
             stdDev += Math.pow((values.get(i) - this.mean), 2);
         }
-        stdDev = Math.sqrt(stdDev / N);
-        return Arithmetic.redondear(stdDev, 6);
+        stdDev = Arithmetic.redondear(Math.sqrt(stdDev / N), 9);
+        return stdDev;
     }
 
     /**
