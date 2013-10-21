@@ -16,9 +16,6 @@ public class IndicatorController {
      * tener uno para cada moneda y/o periodo.
      */
     private static ArrayList<Indicator> indicatorsPool = new ArrayList();
-    public IndicatorController(){
-        
-    }
     
     /**
      * Recibe precios de apertura de minuto y actualiza a los indicadores, 

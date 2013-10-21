@@ -9,6 +9,7 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import io.Inputs;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -81,6 +82,8 @@ public class Mongo {
     public DBCollection getCollection(){
         return this.coll;
     }
+    
+    
     
     public Mongo setFrom(Integer from){
         this.from = from;
